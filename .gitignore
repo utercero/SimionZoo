@@ -295,3 +295,4 @@ $RECYCLE.BIN/
 !bin/cntk-linux/libopen-rte.so.12
 
 *.functions
+*.cd

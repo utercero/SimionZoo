@@ -127,9 +127,6 @@
     <ClInclude Include="worlds\swinguppendulum.h">
       <Filter>worlds</Filter>
     </ClInclude>
-    <ClInclude Include="worlds\underwatervehicle.h">
-      <Filter>worlds</Filter>
-    </ClInclude>
     <ClInclude Include="worlds\windturbine.h">
       <Filter>worlds</Filter>
     </ClInclude>
@@ -210,6 +207,12 @@
     </ClInclude>
     <ClInclude Include="deep-discrete-q-policy.h">
       <Filter>neural-networks</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\drone.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="Drone4.h">
+      <Filter>bullet3</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -360,9 +363,6 @@
     <ClCompile Include="worlds\swinguppendulum.cpp">
       <Filter>worlds</Filter>
     </ClCompile>
-    <ClCompile Include="worlds\underwatervehicle.cpp">
-      <Filter>worlds</Filter>
-    </ClCompile>
     <ClCompile Include="worlds\windturbine.cpp">
       <Filter>worlds</Filter>
     </ClCompile>
@@ -438,6 +438,12 @@
     <ClCompile Include="deep-discrete-q-policy.cpp">
       <Filter>neural-networks</Filter>
     </ClCompile>
+    <ClCompile Include="worlds\drone.cpp">
+      <Filter>worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="Drone4.cpp">
+      <Filter>bullet3</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="bullet3">
@@ -467,5 +473,8 @@
     <Filter Include="linear-vfa-learning">
       <UniqueIdentifier>{762c5544-82b2-4bfc-ae2c-d3f99a3c8074}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>
