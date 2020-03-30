@@ -214,6 +214,12 @@
     <ClInclude Include="Drone4.h">
       <Filter>bullet3</Filter>
     </ClInclude>
+    <ClInclude Include="worlds\Drone6DOF.h">
+      <Filter>bullet3</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\drone6dof-control.h">
+      <Filter>worlds</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="actor.cpp">
@@ -443,6 +449,12 @@
     </ClCompile>
     <ClCompile Include="Drone4.cpp">
       <Filter>bullet3</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\Drone6DOF.cpp">
+      <Filter>bullet3</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\drone6dof-control.cpp">
+      <Filter>worlds</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
