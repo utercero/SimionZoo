@@ -17,11 +17,14 @@ Written by: Marten Svanfeldt
 */
 
 #include "Drone6DOF.h"
+#include "BulletPhysics.h"
+
 
 //#define RIGID 1
 
-Drone6DOF::Drone6DOF (btDynamicsWorld* ownerWorld, const btVector3& positionOffset) : m_ownerWorld (ownerWorld)
+Drone6DOF::Drone6DOF (BulletPhysics* physics, const btVector3& positionOffset) :BulletBody(2.,btVector3(),NULL)
 {
+	fisicas = physics;
 	
 	// Setup the geometry
 	m_shapes[BODYPART_BASE] = new btBoxShape(btVector3(btScalar(3.0),btScalar( 0.1),btScalar(3.0)));
@@ -93,7 +96,7 @@ Drone6DOF::Drone6DOF (btDynamicsWorld* ownerWorld, const btVector3& positionOffs
 		joint->setLinearLowerLimit(btVector3(0., 0., 0.));
 		joint->setLinearUpperLimit(btVector3(0., 0., 0.)); 
 		m_joints[JOINT_RIGHT_UP] = joint;
-		m_ownerWorld->addConstraint(m_joints[JOINT_RIGHT_UP], true);
+		fisicas->getDynamicsWorld()->addConstraint(m_joints[JOINT_RIGHT_UP], true);
 
 
 		localA.setIdentity(); localB.setIdentity();
@@ -105,7 +108,7 @@ Drone6DOF::Drone6DOF (btDynamicsWorld* ownerWorld, const btVector3& positionOffs
 		joint->setLinearLowerLimit(btVector3(0., 0., 0.));
 		joint->setLinearUpperLimit(btVector3(0., 0., 0.));
 		m_joints[JOINT_LEFT_UP] = joint;
-		m_ownerWorld->addConstraint(m_joints[JOINT_LEFT_UP], true);
+		fisicas->getDynamicsWorld()->addConstraint(m_joints[JOINT_LEFT_UP], true);
 
 		localA.setIdentity(); localB.setIdentity();
 		localA.setOrigin(btVector3(btScalar(-2.8), btScalar(0.6), btScalar(-2.8)));
@@ -116,7 +119,7 @@ Drone6DOF::Drone6DOF (btDynamicsWorld* ownerWorld, const btVector3& positionOffs
 		joint->setLinearLowerLimit(btVector3(0., 0., 0.));
 		joint->setLinearUpperLimit(btVector3(0., 0., 0.));
 		m_joints[JOINT_LEFT_DOWN] = joint;
-		m_ownerWorld->addConstraint(m_joints[JOINT_LEFT_DOWN], true);
+		fisicas->getDynamicsWorld()->addConstraint(m_joints[JOINT_LEFT_DOWN], true);
 
 		localA.setIdentity(); localB.setIdentity();
 		localA.setOrigin(btVector3(btScalar(2.8), btScalar(0.6), btScalar(-2.8)));
@@ -127,12 +130,11 @@ Drone6DOF::Drone6DOF (btDynamicsWorld* ownerWorld, const btVector3& positionOffs
 		joint->setLinearLowerLimit(btVector3(0., 0., 0.));
 		joint->setLinearUpperLimit(btVector3(0., 0., 0.));
 		m_joints[JOINT_RIGHT_DOWN] = joint;
-		m_ownerWorld->addConstraint(m_joints[JOINT_RIGHT_DOWN], true);
+		fisicas->getDynamicsWorld()->addConstraint(m_joints[JOINT_RIGHT_DOWN], true);
 
 	}
 	
 }
-
 
 Drone6DOF::~Drone6DOF()
 {
@@ -141,14 +143,14 @@ Drone6DOF::~Drone6DOF()
 	// Remove all constraints
 	for (i = 0; i < JOINT_COUNT; ++i)
 	{
-		m_ownerWorld->removeConstraint(m_joints[i]);
+		fisicas->getDynamicsWorld()->removeConstraint(m_joints[i]);
 		delete m_joints[i]; m_joints[i] = 0;
 	}
 
 	// Remove all bodies and shapes
 	for (i = 0; i < BODYPART_COUNT; ++i)
 	{
-		m_ownerWorld->removeRigidBody(m_bodies[i]);
+		fisicas->getDynamicsWorld()->removeRigidBody(m_bodies[i]);
 
 		delete m_bodies[i]->getMotionState();
 
@@ -163,17 +165,14 @@ btRigidBody* Drone6DOF::localCreateRigidBody (btScalar mass, const btTransform& 
 {
 	bool isDynamic = (mass != 0.f);
 	btVector3 localInertia(0,0,0);
-	
 	if (isDynamic)
 		shape->calculateLocalInertia(mass,localInertia);
-
 	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,shape,localInertia);
 	rbInfo.m_additionalDamping = true;
 	btRigidBody* body = new btRigidBody(rbInfo);
-
-	m_ownerWorld->addRigidBody(body);
-
+	body->setActivationState(DISABLE_DEACTIVATION);
+	fisicas->add(shape, body);
 	return body;
 }
 
@@ -204,30 +203,17 @@ void Drone6DOF::subir() {
 
 void Drone6DOF::init()
 {
-
 	btMatrix3x3 original = m_bodies[0]->getWorldTransform().getBasis();
 	for (size_t i = 6; i < BODYPART_COUNT; i++)
 	{
 		btTransform aux = m_bodies[i]->getWorldTransform();
 		aux.setBasis(original);
 		m_bodies[i]->setWorldTransform(aux);
-	}
-	/*
-	for (size_t i = 1; i < JOINT_COUNT; i++)
-	{
-		m_joints[i]->setAngularLowerLimit(btVector3(-SIMD_HALF_PI * 0.25, -SIMD_HALF_PI * 0.25, -SIMD_HALF_PI * 0.25));
-		m_joints[i]->setAngularUpperLimit(btVector3(SIMD_HALF_PI*0.25, SIMD_HALF_PI*0.25, SIMD_HALF_PI*0.25));
-		m_joints[i]->setLinearLowerLimit(btVector3(0., 0., 0.));
-		m_joints[i]->setLinearUpperLimit(btVector3(0., 0., 0.));
-		
-	}
-	*/
-	
+	}	
 }
 
 void Drone6DOF::updateBulletState(State * s, const Action * a, double dt)
 {
-
 
 	*fuerzas[F1_1] = a->get(m_f1_1Id);
 	*fuerzas[F1_2] = a->get(m_f1_2Id);
@@ -278,3 +264,14 @@ void Drone6DOF::updateBulletState(State * s, const Action * a, double dt)
 
 
 }
+
+void Drone6DOF::reset(State * s)
+{
+	//to-do
+}
+void Drone6DOF::updateState(State * s)
+{
+	//to-do
+}
+
+

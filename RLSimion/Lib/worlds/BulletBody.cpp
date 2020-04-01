@@ -52,6 +52,16 @@ BulletBody::BulletBody(double mass, const btVector3& origin, btCollisionShape* s
 	else m_pBody->setActivationState(DISABLE_DEACTIVATION);
 }
 
+BulletBody::BulletBody(const btVector3 & origin)
+{
+	btTransform trans;
+	trans.setIdentity();
+	trans.setOrigin(origin);
+	m_originX = origin.x();
+	m_originY = origin.z();
+	m_originZ = origin.y();
+}
+
 void BulletBody::resetInertia()
 {
 	m_localInertia = btVector3(0, 0, 0);
@@ -81,6 +91,15 @@ void BulletBody::setAbsoluteStateVarIds(const char* xId, const char* yId)
 	m_xId = xId; m_yId = yId;
 	m_bAbsVariablesSet = true;
 	m_bAngleSet = false;
+}
+
+void BulletBody::setAbsoluteStateVarIds(const char * xId, const char * yId, const char * zId, const char * rotXId, const char * rotYId, const char * rotZId)
+{
+	m_xId = xId; 	m_yId = yId; 	m_zId = zId;
+	m_rotXId = rotXId; 	m_rotYId = rotYId; 	m_rotZId = rotZId;
+	m_bAbsVariablesSet = true;
+	m_bAngleSet = true;
+
 }
 
 void BulletBody::setRelativeStateVarIds(const char* relXId, const char* relYId, const char* refXId, const char* refYId)

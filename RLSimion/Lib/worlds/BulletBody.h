@@ -13,10 +13,19 @@ class BulletBody
 	double m_originY = 0.0;
 	double m_originZ = 0.0;
 	double m_originTheta = 0.0;
+	/* añadidas para drone6dof*/
+	double m_rotX = 0.0;
+	double m_rotY = 0.0;
+	double m_rotz = 0.0;
 protected:
 	const char* m_xId;
 	const char* m_yId;
 	const char* m_thetaId;
+	/* añadidas para drone6dof*/
+	const char* m_zId;
+	const char* m_rotXId;
+	const char* m_rotYId;
+	const char* m_rotZId;
 
 	const char* m_relXId;
 	const char* m_relYId;
@@ -32,11 +41,14 @@ protected:
 
 	//protected because we want to force the use of subclasses: StaticObject, Robot, BulletBox, KinematicObject...
 	BulletBody(double mass, const btVector3& pos, btCollisionShape* shape, int objType= 0);
+
+	BulletBody(const btVector3& pos);
 public:
 	virtual ~BulletBody() { }
 
 	void setAbsoluteStateVarIds(const char* xId, const char* yId, const char* thetaId);
 	void setAbsoluteStateVarIds(const char* xId, const char* yId);
+	void setAbsoluteStateVarIds(const char* xId, const char* yId, const char* zId, const char* rotXId,const char* rotYId, const char* rotZId);
 	void setRelativeStateVarIds(const char* relXId, const char* relYId, const char* refXId, const char* refYId);
 	void setOrigin(double x, double y, double theta);
 

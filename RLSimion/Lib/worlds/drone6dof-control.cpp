@@ -90,26 +90,12 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 
 	///creating a DRONE  
 	{
-		Drone6DOF* pDrone = new Drone6DOF(m_pBulletPhysics->getDynamicsWorld(), btVector3(0., 0., 0.));
+		Drone6DOF* pDrone = new Drone6DOF(m_pBulletPhysics, btVector3(0., 0., 0.));
 		pDrone->setActionIds("fuerza1-1", "fuerza1-2", "fuerza1-3", "fuerza1-4",
 			"fuerza2-1", "fuerza2-2", "fuerza2-3", "fuerza2-4",
 			"fuerza3-1", "fuerza3-2", "fuerza2-3", "fuerza3-4",
 			"fuerza4-1", "fuerza4-2", "fuerza4-3", "fuerza4-4");
-		/*
-		?????
-		pDrone->setAbsoluteStateVarIds("drone-x","drone-y", "drone-z", "rot-x", "rot-y","rot-z");
-		pDrone->setRelativeStateVarIds
-		*/
-		/*Robot* pRobot1 = new Robot(MASS_ROBOT
-			, btVector3(BulletPhysics::r1origin_x, 0, BulletPhysics::r1origin_y)
-			, new btSphereShape(0.5));*/
-		/*
-		¿Se puede hacer despues de añadirlo al mundo?
-		pRobot1->setAbsoluteStateVarIds("robot1-x", "robot1-y", "robot1-theta");
-		pRobot1->setActionIds("robot1-v", "robot1-omega");
-		¿se añade el shape?
-		m_pBulletPhysics->add(pRobot1);
-		*/
+		pDrone->setAbsoluteStateVarIds("drone-x", "drone-y", "drone-z", "rot-x", "rot-y", "rot-z");
 		
 	}
 

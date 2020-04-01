@@ -1,11 +1,9 @@
 #pragma once
 #include "BulletBody.h"
+#include "BulletPhysics.h"
 
 
-
-
-
-class Drone6DOF:BulletBody
+class Drone6DOF:public BulletBody
 {
 	
 
@@ -73,24 +71,23 @@ class Drone6DOF:BulletBody
 	const char* m_f4_2Id;
 	const char* m_f4_3Id;
 	const char* m_f4_4Id;
-	btDynamicsWorld* m_ownerWorld;
+	BulletPhysics* fisicas;
 	btCollisionShape* m_shapes[BODYPART_COUNT];
 	btRigidBody* m_bodies[BODYPART_COUNT];
 	btGeneric6DofSpringConstraint* m_joints[JOINT_COUNT];
 	double* fuerzas[FORCE_COUNT];
-
-
+	
 	btRigidBody* localCreateRigidBody (btScalar mass, const btTransform& startTransform, btCollisionShape* shape);
 
 public:
-	Drone6DOF (btDynamicsWorld* ownerWorld,
+	Drone6DOF (BulletPhysics* ownerWorld,
 				const btVector3& positionOffset);
 	void subir();
 	void init();
 	void setActionIds(const char* f11, const char* f12, const char* f13, const char* f14,
 		const char* f21, const char* f22, const char* f23, const char* f24, 
 		const char* f31, const char* f32, const char* f33, const char* f34, 
-		const char* f41, const char* f42, const char* f43, const char* f44)
+		const char* f41, const char* f42, const char* f43, const char* f44) 
 	{ 
 		m_f1_1Id = f11;
 		m_f1_2Id = f12;
@@ -113,7 +110,9 @@ public:
 		m_f4_4Id = f14;
 		
 	}
-	void updateBulletState(State* s, const Action* a, double dt);
+	void updateBulletState(State* s, const Action* a, double dt) override;
+	void reset(State* s) override;
+	void updateState(State* s) override;
 	~Drone6DOF ();
 };
 
