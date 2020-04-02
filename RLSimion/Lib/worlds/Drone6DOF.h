@@ -5,10 +5,6 @@
 
 class Drone6DOF:public BulletBody
 {
-	
-
-
-
 	enum
 	{
 		BODYPART_BASE = 0,
@@ -71,6 +67,35 @@ class Drone6DOF:public BulletBody
 	const char* m_f4_2Id;
 	const char* m_f4_3Id;
 	const char* m_f4_4Id;
+
+	const char* m_x1Id;
+	const char* m_y1Id;
+	const char* m_z1Id;
+	const char* m_rotX1Id;
+	const char* m_rotY1Id;
+	const char* m_rotZ1Id;
+
+	const char* m_x2Id;
+	const char* m_y2Id;
+	const char* m_z2Id;
+	const char* m_rotX2Id;
+	const char* m_rotY2Id;
+	const char* m_rotZ2Id;
+
+	const char* m_x3Id;
+	const char* m_y3Id;
+	const char* m_z3Id;
+	const char* m_rotX3Id;
+	const char* m_rotY3Id;
+	const char* m_rotZ3Id;
+
+	const char* m_x4Id;
+	const char* m_y4Id;
+	const char* m_z4Id;
+	const char* m_rotX4Id;
+	const char* m_rotY4Id;
+	const char* m_rotZ4Id;
+
 	BulletPhysics* fisicas;
 	btCollisionShape* m_shapes[BODYPART_COUNT];
 	btRigidBody* m_bodies[BODYPART_COUNT];
@@ -110,6 +135,12 @@ public:
 		m_f4_4Id = f14;
 		
 	}
+	void setAbsoluteStateVarIds(const char* xId, const char* yId, const char* zId, const char* rotXId, const char* rotYId, const char* rotZId,
+		const char* x1Id, const char* y1Id, const char* z1Id, const char* rotX1Id, const char* rotY1Id, const char* rotZ1Id,
+		const char* x2Id, const char* y2Id, const char* z2Id, const char* rotX2Id, const char* rotY2Id, const char* rotZ2Id,
+		const char* x3Id, const char* y3Id, const char* z3Id, const char* rotX3Id, const char* rotY3Id, const char* rotZ3Id,
+		const char* x4Id, const char* y4Id, const char* z4Id, const char* rotX4Id, const char* rotY4Id, const char* rotZ4Id
+	)override;//override error
 	void updateBulletState(State* s, const Action* a, double dt) override;
 	void reset(State* s) override;
 	void updateState(State* s) override;

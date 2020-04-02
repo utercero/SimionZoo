@@ -17,6 +17,7 @@ class BulletBody
 	double m_rotX = 0.0;
 	double m_rotY = 0.0;
 	double m_rotz = 0.0;
+	
 protected:
 	const char* m_xId;
 	const char* m_yId;
@@ -45,12 +46,20 @@ protected:
 	BulletBody(const btVector3& pos);
 public:
 	virtual ~BulletBody() { }
-
+	
 	void setAbsoluteStateVarIds(const char* xId, const char* yId, const char* thetaId);
 	void setAbsoluteStateVarIds(const char* xId, const char* yId);
-	void setAbsoluteStateVarIds(const char* xId, const char* yId, const char* zId, const char* rotXId,const char* rotYId, const char* rotZId);
+
+	virtual void setAbsoluteStateVarIds(const char* xId, const char* yId, const char* zId, const char* rotXId,const char* rotYId, const char* rotZId,
+		const char* x1Id, const char* y1Id, const char* z1Id, const char* rotX1Id, const char* rotY1Id, const char* rotZ1Id,
+		const char* x2Id, const char* y2Id, const char* z2Id, const char* rotX2Id, const char* rotY2Id, const char* rotZ2Id,
+		const char* x3Id, const char* y3Id, const char* z3Id, const char* rotX3Id, const char* rotY3Id, const char* rotZ3Id,
+		const char* x4Id, const char* y4Id, const char* z4Id, const char* rotX4Id, const char* rotY4Id, const char* rotZ4Id
+	);
+	
 	void setRelativeStateVarIds(const char* relXId, const char* relYId, const char* refXId, const char* refYId);
 	void setOrigin(double x, double y, double theta);
+
 
 	virtual void reset(State* s);
 	virtual void updateState(State* s);

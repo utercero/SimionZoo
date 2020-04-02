@@ -212,6 +212,30 @@ void Drone6DOF::init()
 	}	
 }
 
+
+
+void Drone6DOF::setAbsoluteStateVarIds(const char * xId, const char * yId, const char * zId, const char * rotXId, const char * rotYId, const char * rotZId,
+	const char * x1Id, const char * y1Id, const char * z1Id, const char * rotX1Id, const char * rotY1Id, const char * rotZ1Id, 
+	const char * x2Id, const char * y2Id, const char * z2Id, const char * rotX2Id, const char * rotY2Id, const char * rotZ2Id,
+	const char * x3Id, const char * y3Id, const char * z3Id, const char * rotX3Id, const char * rotY3Id, const char * rotZ3Id, 
+	const char * x4Id, const char * y4Id, const char * z4Id, const char * rotX4Id, const char * rotY4Id, const char * rotZ4Id)
+{
+	m_xId = xId; 	m_yId = yId; 	m_zId = zId;
+	m_rotXId = rotXId; 	m_rotYId = rotYId; 	m_rotZId = rotZId;
+
+	m_x1Id = x1Id; 	m_y1Id = y1Id; 	m_z1Id = z1Id;
+	m_rotX1Id = rotX1Id; 	m_rotY1Id = rotY1Id; 	m_rotZ1Id = rotZ1Id;
+
+	m_x2Id = x2Id; 	m_y2Id = y2Id; 	m_z2Id = z2Id;
+	m_rotX2Id = rotX2Id; 	m_rotY2Id = rotY2Id; 	m_rotZ2Id = rotZ2Id;
+
+	m_x3Id = x3Id; 	m_y3Id = y3Id; 	m_z3Id = z3Id;
+	m_rotX3Id = rotX3Id; 	m_rotY3Id = rotY3Id; 	m_rotZ3Id = rotZ3Id;
+
+	m_x4Id = x4Id; 	m_y4Id = y4Id; 	m_z4Id = z4Id;
+	m_rotX4Id = rotX4Id; 	m_rotY4Id = rotY4Id; 	m_rotZ4Id = rotZ4Id;	
+}
+
 void Drone6DOF::updateBulletState(State * s, const Action * a, double dt)
 {
 
@@ -264,14 +288,13 @@ void Drone6DOF::updateBulletState(State * s, const Action * a, double dt)
 
 
 }
-
 void Drone6DOF::reset(State * s)
 {
-	//to-do
+	//to-do ?? asignar estado al dron???
 }
 void Drone6DOF::updateState(State * s)
 {
-	//to-do
+	//to-do ??? diferencia con reset??
 }
 
 
