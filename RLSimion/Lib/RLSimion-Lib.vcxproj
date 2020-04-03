@@ -232,7 +232,6 @@
     <ClInclude Include="deep-discrete-q-policy.h" />
     <ClInclude Include="deferred-load.h" />
     <ClInclude Include="DQN.h" />
-    <ClInclude Include="Drone4.h" />
     <ClInclude Include="etraces.h" />
     <ClInclude Include="experience-replay.h" />
     <ClInclude Include="experiment.h" />
@@ -285,7 +284,6 @@
     <ClInclude Include="worlds\setpoint.h" />
     <ClInclude Include="worlds\swinguppendulum.h" />
     <ClInclude Include="worlds\templatedConfigFile.h" />
-    <ClInclude Include="worlds\drone.h" />
     <ClInclude Include="worlds\windturbine.h" />
     <ClInclude Include="worlds\world.h" />
   </ItemGroup>
@@ -314,7 +312,6 @@
     <ClCompile Include="deep-discrete-q-policy.cpp" />
     <ClCompile Include="deferred-load.cpp" />
     <ClCompile Include="DQN.cpp" />
-    <ClCompile Include="Drone4.cpp" />
     <ClCompile Include="etraces.cpp" />
     <ClCompile Include="experience-replay.cpp" />
     <ClCompile Include="experiment.cpp" />
@@ -365,7 +362,6 @@
     <ClCompile Include="worlds\setpoint.cpp" />
     <ClCompile Include="worlds\swinguppendulum.cpp" />
     <ClCompile Include="worlds\templatedConfigFile.cpp" />
-    <ClCompile Include="worlds\drone.cpp" />
     <ClCompile Include="worlds\windturbine.cpp" />
     <ClCompile Include="worlds\world.cpp" />
   </ItemGroup>

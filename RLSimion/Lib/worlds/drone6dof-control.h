@@ -19,18 +19,28 @@ class Drone6DOFControl : public DynamicModel
 	size_t m_target_X, m_target_Y, m_target_Z;
 	size_t m_base_X, m_base_Y,m_base_Z;
 	size_t m_rotacion_base_X, m_rotacion_base_Y, m_rotacion_base_Z;
+	size_t m_angular_base_X, m_angular_base_Y, m_angular_base_Z;
+	size_t m_linear_base_X, m_linear_base_Y, m_linear_base_Z;
 
 	size_t m_drone1_X, m_drone1_Y, m_drone1_Z;
 	size_t m_rotacion_drone1_X, m_rotacion_drone1_Y, m_rotacion_drone1_Z;
+	size_t m_angular_drone1_X, m_angular_drone1_Y, m_angular_drone1_Z;
+	size_t m_linear_drone1_X, m_linear_drone1_Y, m_linear_drone1_Z;
 
 	size_t m_drone2_X, m_drone2_Y, m_drone2_Z;
 	size_t m_rotacion_drone2_X, m_rotacion_drone2_Y, m_rotacion_drone2_Z;
+	size_t m_linear_drone2_X, m_linear_drone2_Y, m_linear_drone2_Z;
+	size_t m_angular_drone2_X, m_angular_drone2_Y, m_angular_drone2_Z;
 
 	size_t m_drone3_X, m_drone3_Y, m_drone3_Z;
 	size_t m_rotacion_drone3_X, m_rotacion_drone3_Y, m_rotacion_drone3_Z;
+	size_t m_angular_drone3_X, m_angular_drone3_Y, m_angular_drone3_Z;
+	size_t m_linear_drone3_X, m_linear_drone3_Y, m_linear_drone3_Z;
 
 	size_t m_drone4_X, m_drone4_Y, m_drone4_Z;
 	size_t m_rotacion_drone4_X, m_rotacion_drone4_Y, m_rotacion_drone4_Z;
+	size_t m_linear_drone4_X, m_linear_drone4_Y, m_linear_drone4_Z;
+	size_t m_angular_drone4_X, m_angular_drone4_Y, m_angular_drone4_Z;
 
 
 	// Action variables
