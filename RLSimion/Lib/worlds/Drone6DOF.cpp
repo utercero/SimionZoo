@@ -272,6 +272,11 @@ void Drone6DOF::setAbsoluteStateVarIds(const char * xId, const char * yId, const
 
 }
 
+void Drone6DOF::setErrorStateVarId(const char * id)
+{
+	m_error = id;
+}
+
 void Drone6DOF::updateBulletState(State * s, const Action * a, double dt)
 {
 
@@ -361,9 +366,23 @@ void Drone6DOF::updateState(State * s)
 	s->set(m_yId, transform.getOrigin().y());
 	s->set(m_zId, transform.getOrigin().z());
 
+	s->set(m_error, transform.getOrigin().z() - altura);
+
+	btMatrix3x3& boxRot = transform.getBasis();
+
+
+	btScalar x,y,z; 
+	boxRot.getEulerZYX(z, y, x);
+
+	s->set(m_rotXId, x);
+	s->set(m_rotYId, y);
+	s->set(m_rotZId, z);
+	/*
 	s->set(m_rotXId, transform.getRotation().getX());
 	s->set(m_rotYId, transform.getRotation().getY());
 	s->set(m_rotZId, transform.getRotation().getZ());
+
+	*/
 
 	s->set(m_angularVXId, velocidad.x());
 	s->set(m_angularVYId, velocidad.y());
