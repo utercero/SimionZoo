@@ -1,6 +1,8 @@
 #pragma once
 #include "BulletBody.h"
 #include "BulletPhysics.h"
+#include <string>
+using namespace std;
 
 
 class Drone6DOF:public BulletBody

@@ -22,7 +22,7 @@ Written by: Marten Svanfeldt
 
 //#define RIGID 1
 
-Drone6DOF::Drone6DOF (BulletPhysics* physics, const btVector3& positionOffset) :BulletBody(2.,btVector3(),NULL)
+Drone6DOF::Drone6DOF (BulletPhysics* physics, const btVector3& positionOffset) :BulletBody(positionOffset)
 {
 	fisicas = physics;
 		
@@ -49,6 +49,9 @@ Drone6DOF::Drone6DOF (BulletPhysics* physics, const btVector3& positionOffset) :
 	origenes[MASS_LEFT_LOW] = new btVector3(positionOffset + btVector3(-2.8, 0.61, -2.8));
 	origenes[MASS_RIGHT_UPP] = new btVector3(positionOffset + btVector3(2.8, 0.61, 2.8));
 	origenes[MASS_RIGHT_LOW] = new btVector3(positionOffset + btVector3(2.8, 0.61, -2.8));
+
+	for (int i = 0; i < FORCE_COUNT; i++)
+		fuerzas[i] = new double(0.0);
 	
 
 	btCompoundShape* base = new btCompoundShape();
@@ -345,8 +348,8 @@ void Drone6DOF::reset(State * s)
 		orientation.setEuler(0.0, 0.0, 0.0);
 		bodyTransform.setRotation(orientation);
 
-		m_pBody->setWorldTransform(bodyTransform);
-		m_pBody->getMotionState()->setWorldTransform(bodyTransform);
+		m_bodies[i]->setWorldTransform(bodyTransform);
+		m_bodies[i]->getMotionState()->setWorldTransform(bodyTransform);
 
 		btVector3 localInertia(0, 0, 0);
 		m_bodies[i]->getCollisionShape()->calculateLocalInertia(*masas[i], localInertia);
@@ -399,24 +402,24 @@ void Drone6DOF::updateState(State * s)
 	{
 		transform = m_bodies[i]->getWorldTransform();
 		velocidad = m_bodies[i]->getAngularVelocity();
-		s->set((string("m_x") + to_string(i) + string("Id")).c_str(), transform.getOrigin().x());
-		s->set((string("m_y") + to_string(i) + string("Id")).c_str(), transform.getOrigin().y());
-		s->set((string("m_z") + to_string(i) + string("Id")).c_str(), transform.getOrigin().z());
+		s->set((string("drone") + to_string(i) + string("-x")).c_str(), transform.getOrigin().x());
+		s->set((string("drone") + to_string(i) + string("-y")).c_str(), transform.getOrigin().y());
+		s->set((string("drone") + to_string(i) + string("-z")).c_str(), transform.getOrigin().z());
 		
 
-		s->set((string("m_rotX") + to_string(i) + string("Id")).c_str(), transform.getRotation().getX());
-		s->set((string("m_rotY") + to_string(i) + string("Id")).c_str(), transform.getRotation().getY());
-		s->set((string("m_rotZ") + to_string(i) + string("Id")).c_str(), transform.getRotation().getZ());
+		s->set((string("drone") + to_string(i) + string("-rot-x")).c_str(), transform.getRotation().getX());
+		s->set((string("drone") + to_string(i) + string("-rot-y")).c_str(), transform.getRotation().getY());
+		s->set((string("drone") + to_string(i) + string("-rot-z")).c_str(), transform.getRotation().getZ());
 		
 
-		s->set((string("m_angularVX") + to_string(i) + string("Id")).c_str(), velocidad.x());
-		s->set((string("m_angularVY") + to_string(i) + string("Id")).c_str(), velocidad.y());
-		s->set((string("m_angularVZ") + to_string(i) + string("Id")).c_str(), velocidad.z());
+		s->set((string("drone") + to_string(i) + string("-angular-x")).c_str(), velocidad.x());
+		s->set((string("drone") + to_string(i) + string("-angular-y")).c_str(), velocidad.y());
+		s->set((string("drone") + to_string(i) + string("-angular-z")).c_str(), velocidad.z());
 
 		velocidad = m_bodies[i]->getLinearVelocity();
-		s->set((string("m_linearVX") + to_string(i) + string("Id")).c_str(), velocidad.x());
-		s->set((string("m_linearVY") + to_string(i) + string("Id")).c_str(), velocidad.y());
-		s->set((string("m_linearVZ") + to_string(i) + string("Id")).c_str(), velocidad.z());
+		s->set((string("drone") + to_string(i) + string("-linear-x")).c_str(), velocidad.x());
+		s->set((string("drone") + to_string(i) + string("-linear-y")).c_str(), velocidad.y());
+		s->set((string("drone") + to_string(i) + string("-linear-z")).c_str(), velocidad.z());
 		
 	}
 	
