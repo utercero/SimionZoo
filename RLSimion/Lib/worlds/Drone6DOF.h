@@ -5,6 +5,7 @@
 
 class Drone6DOF:public BulletBody
 {
+	
 	enum
 	{
 		BODYPART_BASE = 0,
@@ -77,6 +78,8 @@ class Drone6DOF:public BulletBody
 	const char* m_f4_3Id;
 	const char* m_f4_4Id;
 
+	const char* m_error;
+
 	const char* m_x1Id;
 	const char* m_y1Id;
 	const char* m_z1Id;
@@ -129,6 +132,7 @@ class Drone6DOF:public BulletBody
 	const char* m_angularVY4Id;
 	const char* m_angularVZ4Id;
 
+
 	BulletPhysics* fisicas;
 	btCollisionShape* m_shapes[BODYPART_COUNT];
 	btRigidBody* m_bodies[MASS_COUNT];
@@ -140,6 +144,7 @@ class Drone6DOF:public BulletBody
 	btRigidBody* localCreateRigidBody (btScalar mass, const btTransform& startTransform, btCollisionShape* shape);
 
 public:
+	static constexpr double altura=10.0;
 	Drone6DOF (BulletPhysics* ownerWorld,
 				const btVector3& positionOffset);
 	void subir();
@@ -175,6 +180,7 @@ public:
 		const char * x2Id, const char * y2Id, const char * z2Id, const char * rotX2Id, const char * rotY2Id, const char * rotZ2Id, const char * angularVX2Id, const char * angularVY2Id, const char * angularVZ2Id, const char * linearVX2Id, const char * linearVY2Id, const char * linearVZ2Id,
 		const char * x3Id, const char * y3Id, const char * z3Id, const char * rotX3Id, const char * rotY3Id, const char * rotZ3Id, const char * angularVX3Id, const char * angularVY3Id, const char * angularVZ3Id, const char * linearVX3Id, const char * linearVY3Id, const char * linearVZ3Id,
 		const char * x4Id, const char * y4Id, const char * z4Id, const char * rotX4Id, const char * rotY4Id, const char * rotZ4Id, const char * angularVX4Id, const char * angularVY4Id, const char * angularVZ4Id, const char * linearVX4Id, const char * linearVY4Id, const char * linearVZ4Id)override;//override error
+	void setErrorStateVarId(const char* id);
 	void updateBulletState(State* s, const Action* a, double dt) override;
 	void reset(State* s) override;
 	void updateState(State* s) override;

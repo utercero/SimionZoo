@@ -37,7 +37,9 @@
 Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 {
 	METADATA("World", "Drone-control");
-
+	  
+	m_error = addStateVariable("error-z", "m", -5.0, 5.0);
+		
 	m_target_X = addStateVariable("target-x", "m", -20.0, 20.0);
 	m_target_Y = addStateVariable("target-y", "m", -20.0, 20.0);
 	m_target_Z = addStateVariable("target-z", "m", -20.0, 20.0);
@@ -173,13 +175,15 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 			"drone2-x", "drone2-y", "drone2-z", "drone2-rot-x", "drone2-rot-y", "drone2-rot-z", "drone2-angular-x","drone2-angular-y","drone2-angular-z", "drone2-linear-x","drone2-linear-y","drone2-linear-z",
 			"drone3-x", "drone3-y", "drone3-z", "drone3-rot-x", "drone3-rot-y", "drone3-rot-z", "drone3-angular-x","drone3-angular-y","drone3-angular-z", "drone3-linear-x","drone3-linear-y","drone3-linear-z",
 			"drone4-x", "drone4-y", "drone4-z", "drone4-rot-x", "drone4-rot-y", "drone4-rot-z", "drone4-angular-x","drone4-angular-y","drone4-angular-z", "drone4-linear-x","drone4-linear-y","drone4-linear-z");
+		pDrone->setErrorStateVarId("error-z");
 		m_pBulletPhysics->addBody(pDrone);
 		
 	}
 
 
 	//the reward function
-	m_pRewardFunction->addRewardComponent(new DistanceReward2D(getStateDescriptor(),"robot1-x","robot1-y","target-x","target-y"));
+//	m_pRewardFunction->addRewardComponent(new DistanceReward2D(getStateDescriptor(),"robot1-x","robot1-y","target-x","target-y"));
+	m_pRewardFunction->addRewardComponent(new DistanceReward3D(getStateDescriptor(), "base-x", "base-y", "base-z", "base-rot.x","base-rot-y","base-linear-y","target-x","target-y","error-z"));
 	m_pRewardFunction->initialize();
 }
 
