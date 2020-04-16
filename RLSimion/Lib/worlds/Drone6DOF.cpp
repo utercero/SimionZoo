@@ -163,9 +163,9 @@ Drone6DOF::~Drone6DOF()
 		fisicas->getDynamicsWorld()->removeConstraint(m_joints[i]);
 		delete m_joints[i]; m_joints[i] = 0;
 	}
-
-	// Remove all shapes
-	for (i = 0; i < BODYPART_COUNT; ++i)
+	
+	// Remove all shapes used to construct btCompound. Other shapes are removed by other destructor
+	for (i = 0; i < 5; ++i)
 	{
 		delete m_shapes[i]; m_shapes[i] = 0;
 	}

@@ -186,7 +186,7 @@ public:
 	void updateBulletState(State* s, const Action* a, double dt) override;
 	void reset(State* s) override;
 	void updateState(State* s) override;
-	~Drone6DOF ();
+	virtual ~Drone6DOF ();
 };
 
 
