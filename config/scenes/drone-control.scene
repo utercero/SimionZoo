@@ -1,0 +1,31 @@
+<Scene>
+  <Import-Scene Path="drone6dof-control-common.scene"/>
+  <Objects>
+    <Collada-Model Name="Robot" Path="R2D2/R2D2.dae">
+      <Transform>
+        <Translation>
+          <X Bind="base-x"/>
+          <Y Bind="base-y"/>
+          <Z Bind="base-z"/>
+        </Translation>
+        <Rotation>
+          <Yaw Bind="base-rot-x"/>
+          <Pitch Bind="base-rot-y"/>
+          <Roll Bind="base-rot-z"/>
+        </Rotation>
+      </Transform>
+      <Fit-BoundingBox>
+        <Min>
+          <X>-0.5</X>
+          <Y>-0.5</Y>
+          <Z>-0.5</Z>
+        </Min>
+        <Max>
+          <X>0.5</X>
+          <Y>0.5</Y>
+          <Z>0.5</Z>
+        </Max>
+      </Fit-BoundingBox>
+    </Collada-Model>
+  </Objects>
+</Scene>
