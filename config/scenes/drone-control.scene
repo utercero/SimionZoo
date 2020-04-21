@@ -1,7 +1,65 @@
 <Scene>
-  <Import-Scene Path="drone6dof-control-common.scene"/>
+<Camera>
+    <Simple-Camera Name="Main-camera">
+      <Transform>
+        <Translation>
+          <X>0.0</X>
+          <Y>20.0</Y>
+          <Z>60.0</Z>
+        </Translation>
+        <Rotation>
+          <Yaw>0.0</Yaw>
+          <Pitch>0.0</Pitch>
+          <Roll>0.0</Roll>
+        </Rotation>
+      </Transform>
+    </Simple-Camera>
+  </Camera>
+  <Light Name="Main-light">
+    <Directional-Light>
+      <Direction>
+        <X>-0.577</X>
+        <Y>0.577</Y>
+        <Z>0.577</Z>
+      </Direction>
+      <Ambient>
+        <R>0.2</R>
+        <G>0.2</G>
+        <B>0.2</B>
+      </Ambient>
+      <Diffuse>
+        <R>1.0</R>
+        <G>1.0</G>
+        <B>1.0</B>
+      </Diffuse>
+      <Specular>
+        <R>0.0</R>
+        <G>0.0</G>
+        <B>0.0</B>
+      </Specular>
+    </Directional-Light>
+  </Light>
   <Objects>
-    <Collada-Model Name="Robot" Path="R2D2/R2D2.dae">
+    <Box Name="Floor" TexCoordMultFactor="3">
+      <Material>
+        <Simple-TL-Material>
+          <Texture>
+            <Path>concrete1.png</Path>
+          </Texture>
+        </Simple-TL-Material>
+      </Material>
+      <Transform>
+        <Scale>
+          <X>100</X>
+          <Y>0.1</Y>
+          <Z>100</Z>
+        </Scale>
+        <Translation>
+          <Y>-0.1</Y>
+        </Translation>
+      </Transform>
+    </Box>
+    <Collada-Model Name="Drone" Path="R2D2/R2D2.dae">
       <Transform>
         <Translation>
           <X Bind="base-x"/>

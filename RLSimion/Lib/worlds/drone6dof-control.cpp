@@ -38,14 +38,14 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 {
 	METADATA("World", "Drone-control");
 	  
-	m_error = addStateVariable("error-z", "m", -5.0, 5.0);
+	m_error = addStateVariable("error-z", "m", -40.0, 40.0);
 		
 	m_target_X = addStateVariable("target-x", "m", -20.0, 20.0);
 	m_target_Y = addStateVariable("target-y", "m", -20.0, 20.0);
 	m_target_Z = addStateVariable("target-z", "m", -20.0, 20.0);
 
 	m_base_X = addStateVariable("base-x", "m", -20.0, 20.0);
-	m_base_Y = addStateVariable("base-y", "m", -20.0, 20.0);
+	m_base_Y = addStateVariable("base-y", "m", -40.0, 40.0);
 	m_base_Z = addStateVariable("base-z", "m", -20.0, 20.0);
 
 	m_rotacion_base_X = addStateVariable("base-rot-x", "rad", -8.0, 8.0);
@@ -124,7 +124,8 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 	m_linear_drone4_Y = addStateVariable("drone4-linear-y", "m/s", -8.0, 8.0);
 	m_linear_drone4_Z = addStateVariable("drone4-linear-z", "m/s", -8.0, 8.0);
 
-
+	//289 menos,285mas,287 mas,288 mas,2885mas 725001430512 48888 425-725001430512 50000
+	addActionVariable("fuerza-PID", "N", 2.999,10.999);
 
 	addActionVariable("fuerza1-1", "N", 0.0, 2.0);
 	addActionVariable("fuerza1-2", "N", 0.0, 2.0);
@@ -165,7 +166,7 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 
 	///creating a DRONE  
 	{
-		Drone6DOF* pDrone = new Drone6DOF(m_pBulletPhysics, btVector3(0., 0., 0.));
+		Drone6DOF* pDrone = new Drone6DOF(m_pBulletPhysics, btVector3(0., 0.5, 0.));
 		pDrone->setActionIds("fuerza1-1", "fuerza1-2", "fuerza1-3", "fuerza1-4",
 			"fuerza2-1", "fuerza2-2", "fuerza2-3", "fuerza2-4",
 			"fuerza3-1", "fuerza3-2", "fuerza2-3", "fuerza3-4",
@@ -176,6 +177,7 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 			"drone3-x", "drone3-y", "drone3-z", "drone3-rot-x", "drone3-rot-y", "drone3-rot-z", "drone3-angular-x","drone3-angular-y","drone3-angular-z", "drone3-linear-x","drone3-linear-y","drone3-linear-z",
 			"drone4-x", "drone4-y", "drone4-z", "drone4-rot-x", "drone4-rot-y", "drone4-rot-z", "drone4-angular-x","drone4-angular-y","drone4-angular-z", "drone4-linear-x","drone4-linear-y","drone4-linear-z");
 		pDrone->setErrorStateVarId("error-z");
+		pDrone->setPIDActionId("fuerza-PID");
 		m_pBulletPhysics->addBody(pDrone);
 		
 	}
