@@ -22,7 +22,7 @@ Written by: Marten Svanfeldt
 
 //#define RIGID 1
 
-Drone6DOF::Drone6DOF (BulletPhysics* physics, const btVector3& positionOffset) :BulletBody(2.,btVector3(),NULL)
+Drone6DOF::Drone6DOF (BulletPhysics* physics, const btVector3& positionOffset) :BulletBody(positionOffset)
 {
 	fisicas = physics;
 		
@@ -38,17 +38,20 @@ Drone6DOF::Drone6DOF (BulletPhysics* physics, const btVector3& positionOffset) :
 	m_shapes[UNION_RIGHT_LOW] = new btConeShape(0.1, 0.5);
 
 	
-	masas[MASS_COMP] = new btScalar(10.0);
-	masas[MASS_LEFT_LOW] = new btScalar(0.5);
-	masas[MASS_RIGHT_LOW] = new btScalar(0.5);
-	masas[MASS_LEFT_UPP] = new btScalar(0.5);
-	masas[MASS_RIGHT_UPP] = new btScalar(0.5);
+	masas[MASS_COMP] = new btScalar(1000.0);
+	masas[MASS_LEFT_LOW] = new btScalar(10.);
+	masas[MASS_RIGHT_LOW] = new btScalar(10.);
+	masas[MASS_LEFT_UPP] = new btScalar(10.);
+	masas[MASS_RIGHT_UPP] = new btScalar(10.);
 
 	origenes[MASS_COMP] = new btVector3(positionOffset);
 	origenes[MASS_LEFT_UPP] = new btVector3(positionOffset + btVector3(-2.8, 0.61, 2.8));
 	origenes[MASS_LEFT_LOW] = new btVector3(positionOffset + btVector3(-2.8, 0.61, -2.8));
 	origenes[MASS_RIGHT_UPP] = new btVector3(positionOffset + btVector3(2.8, 0.61, 2.8));
 	origenes[MASS_RIGHT_LOW] = new btVector3(positionOffset + btVector3(2.8, 0.61, -2.8));
+
+	for (int i = 0; i < FORCE_COUNT; i++)
+		fuerzas[i] = new double(0.0);
 	
 
 	btCompoundShape* base = new btCompoundShape();
@@ -160,9 +163,9 @@ Drone6DOF::~Drone6DOF()
 		fisicas->getDynamicsWorld()->removeConstraint(m_joints[i]);
 		delete m_joints[i]; m_joints[i] = 0;
 	}
-
-	// Remove all shapes
-	for (i = 0; i < BODYPART_COUNT; ++i)
+	
+	// Remove all shapes used to construct btCompound. Other shapes are removed by other destructor
+	for (i = 0; i < 5; ++i)
 	{
 		delete m_shapes[i]; m_shapes[i] = 0;
 	}
@@ -277,33 +280,63 @@ void Drone6DOF::setErrorStateVarId(const char * id)
 	m_error = id;
 }
 
+void Drone6DOF::setPIDActionId(const char * id)
+{
+	m_fuerza = id;
+}
+
 void Drone6DOF::updateBulletState(State * s, const Action * a, double dt)
 {
+	if (m_fuerza!=NULL)
+	{
+		*fuerzas[F1_1] = a->get(m_fuerza);
+		*fuerzas[F1_2] = a->get(m_fuerza);
+		*fuerzas[F1_3] = a->get(m_fuerza);
+		*fuerzas[F1_4] = a->get(m_fuerza);
 
-	*fuerzas[F1_1] = a->get(m_f1_1Id);
-	*fuerzas[F1_2] = a->get(m_f1_2Id);
-	*fuerzas[F1_3] = a->get(m_f1_3Id);
-	*fuerzas[F1_4] = a->get(m_f1_4Id);
+		*fuerzas[F2_1] = a->get(m_fuerza);
+		*fuerzas[F2_2] = a->get(m_fuerza);
+		*fuerzas[F2_3] = a->get(m_fuerza);
+		*fuerzas[F2_4] = a->get(m_fuerza);
 
-	*fuerzas[F2_1] = a->get(m_f2_1Id);
-	*fuerzas[F2_2] = a->get(m_f2_2Id);
-	*fuerzas[F2_3] = a->get(m_f2_3Id);
-	*fuerzas[F2_4] = a->get(m_f2_4Id);
+		*fuerzas[F3_1] = a->get(m_fuerza);
+		*fuerzas[F3_2] = a->get(m_fuerza);
+		*fuerzas[F3_3] = a->get(m_fuerza);
+		*fuerzas[F3_4] = a->get(m_fuerza);
 
-	*fuerzas[F3_1] = a->get(m_f3_1Id);
-	*fuerzas[F3_2] = a->get(m_f3_2Id);
-	*fuerzas[F3_3] = a->get(m_f3_3Id);
-	*fuerzas[F3_4] = a->get(m_f3_4Id);
+		*fuerzas[F4_1] = a->get(m_fuerza);
+		*fuerzas[F4_2] = a->get(m_fuerza);
+		*fuerzas[F4_3] = a->get(m_fuerza);
+		*fuerzas[F4_4] = a->get(m_fuerza);
+	}
+	else {
 
-	*fuerzas[F4_1] = a->get(m_f4_1Id);
-	*fuerzas[F4_2] = a->get(m_f4_2Id);
-	*fuerzas[F4_3] = a->get(m_f4_3Id);
-	*fuerzas[F4_4] = a->get(m_f4_4Id);
+
+		*fuerzas[F1_1] = a->get(m_f1_1Id);
+		*fuerzas[F1_2] = a->get(m_f1_2Id);
+		*fuerzas[F1_3] = a->get(m_f1_3Id);
+		*fuerzas[F1_4] = a->get(m_f1_4Id);
+
+		*fuerzas[F2_1] = a->get(m_f2_1Id);
+		*fuerzas[F2_2] = a->get(m_f2_2Id);
+		*fuerzas[F2_3] = a->get(m_f2_3Id);
+		*fuerzas[F2_4] = a->get(m_f2_4Id);
+
+		*fuerzas[F3_1] = a->get(m_f3_1Id);
+		*fuerzas[F3_2] = a->get(m_f3_2Id);
+		*fuerzas[F3_3] = a->get(m_f3_3Id);
+		*fuerzas[F3_4] = a->get(m_f3_4Id);
+
+		*fuerzas[F4_1] = a->get(m_f4_1Id);
+		*fuerzas[F4_2] = a->get(m_f4_2Id);
+		*fuerzas[F4_3] = a->get(m_f4_3Id);
+		*fuerzas[F4_4] = a->get(m_f4_4Id);
+	}
 	
 	int j = 0;
 	for (size_t i = 1; i < MASS_COUNT; i++)
 	{
-		btVector3 relativeForce = btVector3(0., 11., 0.);
+		btVector3 relativeForce = btVector3(0., 1.0, 0.);
 		btMatrix3x3& boxRot = m_bodies[i]->getWorldTransform().getBasis();
 		
 		//m_bodies[i]->activate(true);
@@ -312,15 +345,15 @@ void Drone6DOF::updateBulletState(State * s, const Action * a, double dt)
 		 
 		j++;
 
-		m_bodies[i]->applyForce(boxRot *(relativeForce**fuerzas[j]), btVector3(0.3, 0.0, 0.3));
+		m_bodies[i]->applyForce(boxRot *(relativeForce**fuerzas[j]), btVector3(0.3, 0.0, -0.3));
 
 		j++;
 
-		m_bodies[i]->applyForce(boxRot *(relativeForce**fuerzas[j]), btVector3(0.3, 0.0, 0.3));
+		m_bodies[i]->applyForce(boxRot *(relativeForce**fuerzas[j]), btVector3(-0.3, 0.0, 0.3));
 
 		j++;
 
-		m_bodies[i]->applyForce(boxRot *(relativeForce**fuerzas[j]), btVector3(0.3, 0.0, 0.3));
+		m_bodies[i]->applyForce(boxRot *(relativeForce**fuerzas[j]), btVector3(-0.3, 0.0, -0.3));
 
 		j++;
 
@@ -345,8 +378,8 @@ void Drone6DOF::reset(State * s)
 		orientation.setEuler(0.0, 0.0, 0.0);
 		bodyTransform.setRotation(orientation);
 
-		m_pBody->setWorldTransform(bodyTransform);
-		m_pBody->getMotionState()->setWorldTransform(bodyTransform);
+		m_bodies[i]->setWorldTransform(bodyTransform);
+		m_bodies[i]->getMotionState()->setWorldTransform(bodyTransform);
 
 		btVector3 localInertia(0, 0, 0);
 		m_bodies[i]->getCollisionShape()->calculateLocalInertia(*masas[i], localInertia);
@@ -366,7 +399,7 @@ void Drone6DOF::updateState(State * s)
 	s->set(m_yId, transform.getOrigin().y());
 	s->set(m_zId, transform.getOrigin().z());
 
-	s->set(m_error, transform.getOrigin().z() - altura);
+	s->set(m_error, altura- transform.getOrigin().y() );
 
 	btMatrix3x3& boxRot = transform.getBasis();
 
@@ -399,24 +432,27 @@ void Drone6DOF::updateState(State * s)
 	{
 		transform = m_bodies[i]->getWorldTransform();
 		velocidad = m_bodies[i]->getAngularVelocity();
-		s->set((string("m_x") + to_string(i) + string("Id")).c_str(), transform.getOrigin().x());
-		s->set((string("m_y") + to_string(i) + string("Id")).c_str(), transform.getOrigin().y());
-		s->set((string("m_z") + to_string(i) + string("Id")).c_str(), transform.getOrigin().z());
+		s->set((string("drone") + to_string(i) + string("-x")).c_str(), transform.getOrigin().x());
+		s->set((string("drone") + to_string(i) + string("-y")).c_str(), transform.getOrigin().y());
+		s->set((string("drone") + to_string(i) + string("-z")).c_str(), transform.getOrigin().z());
+
+		boxRot = transform.getBasis();
+		boxRot.getEulerZYX(z, y, x);
 		
 
-		s->set((string("m_rotX") + to_string(i) + string("Id")).c_str(), transform.getRotation().getX());
-		s->set((string("m_rotY") + to_string(i) + string("Id")).c_str(), transform.getRotation().getY());
-		s->set((string("m_rotZ") + to_string(i) + string("Id")).c_str(), transform.getRotation().getZ());
+		s->set((string("drone") + to_string(i) + string("-rot-x")).c_str(), x);
+		s->set((string("drone") + to_string(i) + string("-rot-y")).c_str(), y);
+		s->set((string("drone") + to_string(i) + string("-rot-z")).c_str(), z);
 		
 
-		s->set((string("m_angularVX") + to_string(i) + string("Id")).c_str(), velocidad.x());
-		s->set((string("m_angularVY") + to_string(i) + string("Id")).c_str(), velocidad.y());
-		s->set((string("m_angularVZ") + to_string(i) + string("Id")).c_str(), velocidad.z());
+		s->set((string("drone") + to_string(i) + string("-angular-x")).c_str(), velocidad.x());
+		s->set((string("drone") + to_string(i) + string("-angular-y")).c_str(), velocidad.y());
+		s->set((string("drone") + to_string(i) + string("-angular-z")).c_str(), velocidad.z());
 
 		velocidad = m_bodies[i]->getLinearVelocity();
-		s->set((string("m_linearVX") + to_string(i) + string("Id")).c_str(), velocidad.x());
-		s->set((string("m_linearVY") + to_string(i) + string("Id")).c_str(), velocidad.y());
-		s->set((string("m_linearVZ") + to_string(i) + string("Id")).c_str(), velocidad.z());
+		s->set((string("drone") + to_string(i) + string("-linear-x")).c_str(), velocidad.x());
+		s->set((string("drone") + to_string(i) + string("-linear-y")).c_str(), velocidad.y());
+		s->set((string("drone") + to_string(i) + string("-linear-z")).c_str(), velocidad.z());
 		
 	}
 	

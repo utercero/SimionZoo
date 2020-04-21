@@ -116,38 +116,6 @@ double DistanceReward3D::getReward(const State * s, const Action * a, const Stat
 	double droneVY = s_p->get(m_var1vlinearId);
 	double aterriza = 1.0;
 	double distance = getDistanceBetweenPoints(targetX, targetY, droneX, droneY);
-	if (distance*aterriza <= 0.0001)
-	{
-		aterriza = 5.0;
-		//hay que bajar sin alejarse del punto
-		distance += (droneZ / alturaVuelo) + descuentoRot;
-	}
-	else {
-		if (abs(droneZ-alturaVuelo)<0.0001)
-		{
-			//hay que volar
-			//se le añade a la distance un factor que penaliza la rotación del drone
-			distance += descuentoRot;
-		}
-		else 
-		{
-			if (droneZ<alturaVuelo && droneVY>=0)
-			{
-				//el drone está despegando
-				distance = -droneZ / alturaVuelo + descuentoRot;
-			}
-			else
-			{
-				//el drone está volando y ha perdido o ganado altura
-				distance += descuentoRot + abs(droneZ - alturaVuelo)*factorAltura;
-			}
-		}
-	}
-
-	distance = std::max(distance, 0.0001);
-	double reward = 1. - distance / m_maxDist;
-	reward = std::max(reward, getMin());
-	return reward;
 	*/
 }
 

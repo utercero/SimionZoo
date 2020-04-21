@@ -62,6 +62,7 @@ std::shared_ptr<Controller> Controller::getInstance(ConfigNode* pConfigNode)
 		{"Jonkman",CHOICE_ELEMENT_NEW<WindTurbineJonkmanController>},
 		{"Vidal",CHOICE_ELEMENT_NEW<WindTurbineVidalController>},
 		{"Boukhezzar",CHOICE_ELEMENT_NEW<WindTurbineBoukhezzarController>},
+		{"PIDDrone",CHOICE_ELEMENT_NEW<PIDDroneController>},
 	});
 }
 
@@ -169,9 +170,75 @@ double PIDController::evaluate(const State* s, const Action* a, unsigned int out
 	double error= s->get(m_errorVariable.get());
 	double dError = error*SimionApp::get()->pWorld->getDT();
 	m_intError += error*SimionApp::get()->pWorld->getDT();
-
 	return error * m_pKP->get() + m_intError * m_pKI->get() + dError * m_pKD->get();
 }
+
+
+
+PIDDroneController::PIDDroneController(ConfigNode* pConfigNode)
+{
+	m_outputAction = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action");
+	m_pKP = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KP", "Proportional gain");
+	m_pKI = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KI", "Integral gain");
+	m_pKD = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KD", "Derivative gain");
+
+	m_errorVariable = STATE_VARIABLE(pConfigNode, "Input-Variable", "The input state variable");
+	m_intError = 0.0;
+
+	m_inputStateVariables.push_back(m_errorVariable.get());
+	m_output = vector<double>(1);
+
+	//SimionApp::get()->registerStateActionFunction("PID", this);
+}
+
+PIDDroneController::~PIDDroneController()
+{}
+
+unsigned int PIDDroneController::getNumOutputs()
+{
+	return 1;
+}
+const char* PIDDroneController::getOutputAction(size_t output)
+{
+	if (output == 0)
+		return m_outputAction.get();
+	throw std::runtime_error("LQRController. Invalid action output given.");
+}
+
+/// <summary>
+/// Calculates one of the outputs of the PID controller
+/// </summary>
+/// <param name="s">Initial state</param>
+/// <param name="a">Action</param>
+/// <param name="index">Index of the output</param>
+/// <returns>The output value</returns>
+double PIDDroneController::evaluate(const State* s, const Action* a, unsigned int output)
+{
+	if (SimionApp::get()->pWorld->getEpisodeSimTime() == 0.0)
+		m_intError = 0.0;
+	double error = s->get(m_errorVariable.get());
+	double dError = error * SimionApp::get()->pWorld->getDT();
+	m_intError += error * SimionApp::get()->pWorld->getDT();
+	double velocidad = s->get("base-linear-y");
+	if(error > 8.8)
+		return 9.0 + error * m_pKP->get();
+	if (error > 0.0)
+	{
+		if(velocidad>0.0)
+			return 1.5+error * m_pKP->get();
+		else
+			return 22.0 + error * m_pKP->get();
+	}	
+	else {
+		if (velocidad > 0.0)
+			return 0.1;
+		else
+			return 3.5;
+	}
+	return error * m_pKP->get() + m_intError * m_pKI->get() + dError * m_pKD->get();
+}
+
+
 
 
 
