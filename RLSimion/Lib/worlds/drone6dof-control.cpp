@@ -125,7 +125,7 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 	m_linear_drone4_Z = addStateVariable("drone4-linear-z", "m/s", -8.0, 8.0);
 
 	//289 menos,285mas,287 mas,288 mas,2885mas 725001430512 48888 425-725001430512 50000
-	addActionVariable("fuerza-PID", "N", 2.999,10.999);
+	addActionVariable("fuerza-PID", "N", 0.0,22.0);
 
 	addActionVariable("fuerza1-1", "N", 0.0, 2.0);
 	addActionVariable("fuerza1-2", "N", 0.0, 2.0);
@@ -166,7 +166,7 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 
 	///creating a DRONE  
 	{
-		Drone6DOF* pDrone = new Drone6DOF(m_pBulletPhysics, btVector3(0., 0.5, 0.));
+		Drone6DOF* pDrone = new Drone6DOF(m_pBulletPhysics, btVector3(0., 0.05, 0.));
 		pDrone->setActionIds("fuerza1-1", "fuerza1-2", "fuerza1-3", "fuerza1-4",
 			"fuerza2-1", "fuerza2-2", "fuerza2-3", "fuerza2-4",
 			"fuerza3-1", "fuerza3-2", "fuerza2-3", "fuerza3-4",
