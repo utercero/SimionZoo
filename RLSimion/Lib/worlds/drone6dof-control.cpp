@@ -184,8 +184,8 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 
 
 	//the reward function
-//	m_pRewardFunction->addRewardComponent(new DistanceReward2D(getStateDescriptor(),"robot1-x","robot1-y","target-x","target-y"));
-	m_pRewardFunction->addRewardComponent(new DistanceReward3D(getStateDescriptor(), "base-x", "base-y", "base-z", "base-rot.x","base-rot-y","base-linear-y","target-x","target-y","error-z"));
+	//m_pRewardFunction->addRewardComponent(new DistanceReward2D(getStateDescriptor(),"base-x","base-y","target-x","target-y"));
+    m_pRewardFunction->addRewardComponent(new DistanceReward3D(getStateDescriptor(), "base-x", "base-y", "base-z", "base-rot-x","base-rot-z","base-linear-y","target-x","target-y","error-z"));
 	m_pRewardFunction->initialize();
 }
 

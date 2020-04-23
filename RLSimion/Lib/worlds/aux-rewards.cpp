@@ -76,7 +76,7 @@ double DistanceReward2D::getMax()
 	return 1.0;
 }
 
-DistanceReward3D::DistanceReward3D(Descriptor & stateDescr, const char * var1xName, const char * var1yName, const char * var1zName, const char * var1rotxName, const char * var1rotyName, const char* var1vlinearyName, const char * var2xName, const char * var2yName, const char * errorName)
+DistanceReward3D::DistanceReward3D(Descriptor & stateDescr, const char * var1xName, const char * var1yName, const char * var1zName, const char * var1rotxName, const char * var1rotzName, const char* var1vlinearyName, const char * var2xName, const char * var2yName, const char * errorName)
 {
 	m_error = errorName;
 
@@ -84,7 +84,7 @@ DistanceReward3D::DistanceReward3D(Descriptor & stateDescr, const char * var1xNa
 	m_var1yId = var1yName;
 	m_var1zId = var1zName;
 	m_var1rotxId = var1rotxName;
-	m_var1rotyId = var1rotyName;
+	m_var1rotzId = var1rotzName;
 	m_var1vlinearId = var1vlinearyName;
 	m_var2xId = var2xName;
 	m_var2yId = var2yName;
@@ -98,25 +98,22 @@ DistanceReward3D::DistanceReward3D(Descriptor & stateDescr, const char * var1xNa
 
 double DistanceReward3D::getReward(const State * s, const Action * a, const State * s_p)
 {
-	double error = s_p->get(m_error);
-	return 1 - (abs(error) / Drone6DOF::altura);
-
-	/*
 	//comprobar si la rotacion en x e y es acceptable
 	double rotX = s_p->get(m_var1rotxId);
-	double rotY = s_p->get(m_var1rotyId);
-	if (abs(rotX) > maxRot || abs(rotY) > maxRot)
+	double rotZ = s_p->get(m_var1rotzId);
+	if (abs(rotX) > maxRot || abs(rotZ) > maxRot)
 		return getMin();
-	double descuentoRot = (abs(rotX) + abs(rotY))*factorRot;
+	double descuentoRot = (abs(rotX) + abs(rotZ))*factorRot;
+	/*
 	double droneX = s_p->get(m_var1xId);
 	double droneY = s_p->get(m_var1yId);
 	double droneZ = s_p->get(m_var1zId);
 	double targetX = s_p->get(m_var2xId);
 	double targetY = s_p->get(m_var2yId);
-	double droneVY = s_p->get(m_var1vlinearId);
-	double aterriza = 1.0;
-	double distance = getDistanceBetweenPoints(targetX, targetY, droneX, droneY);
-	*/
+	double droneVY = s_p->get(m_var1vlinearId);*/
+	double error = abs(s_p->get(m_error))/ Drone6DOF::altura;
+	return 1 - error;
+
 }
 
 double DistanceReward3D::getMin()
