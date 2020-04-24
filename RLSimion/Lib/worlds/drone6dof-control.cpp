@@ -127,25 +127,25 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 	//289 menos,285mas,287 mas,288 mas,2885mas 725001430512 48888 425-725001430512 50000
 	addActionVariable("fuerza-PID", "N", 0.0,22.0);
 
-	addActionVariable("fuerza1-1", "N", 0.0, 2.0);
-	addActionVariable("fuerza1-2", "N", 0.0, 2.0);
-	addActionVariable("fuerza1-3", "N", 0.0, 2.0);
-	addActionVariable("fuerza1-4", "N", 0.0, 2.0);
+	addActionVariable("fuerza1-1", "N", 0.0, 22.0);
+	addActionVariable("fuerza1-2", "N", 0.0, 22.0);
+	addActionVariable("fuerza1-3", "N", 0.0, 22.0);
+	addActionVariable("fuerza1-4", "N", 0.0, 22.0);
 
-	addActionVariable("fuerza2-1", "N", 0.0, 2.0);
-	addActionVariable("fuerza2-2", "N", 0.0, 2.0);
-	addActionVariable("fuerza2-3", "N", 0.0, 2.0);
-	addActionVariable("fuerza2-4", "N", 0.0, 2.0);
+	addActionVariable("fuerza2-1", "N", 0.0, 22.0);
+	addActionVariable("fuerza2-2", "N", 0.0, 22.0);
+	addActionVariable("fuerza2-3", "N", 0.0, 22.0);
+	addActionVariable("fuerza2-4", "N", 0.0, 22.0);
 
-	addActionVariable("fuerza3-1", "N", 0.0, 2.0);
-	addActionVariable("fuerza3-2", "N", 0.0, 2.0);
-	addActionVariable("fuerza3-3", "N", 0.0, 2.0);
-	addActionVariable("fuerza3-4", "N", 0.0, 2.0);
+	addActionVariable("fuerza3-1", "N", 0.0, 22.0);
+	addActionVariable("fuerza3-2", "N", 0.0, 22.0);
+	addActionVariable("fuerza3-3", "N", 0.0, 22.0);
+	addActionVariable("fuerza3-4", "N", 0.0, 22.0);
 
-	addActionVariable("fuerza4-1", "N", 0.0, 2.0);
-	addActionVariable("fuerza4-2", "N", 0.0, 2.0);
-	addActionVariable("fuerza4-3", "N", 0.0, 2.0);
-	addActionVariable("fuerza4-4", "N", 0.0, 2.0);
+	addActionVariable("fuerza4-1", "N", 0.0, 22.0);
+	addActionVariable("fuerza4-2", "N", 0.0, 22.0);
+	addActionVariable("fuerza4-3", "N", 0.0, 22.0);
+	addActionVariable("fuerza4-4", "N", 0.0, 22.0);
 
 	MASS_ROBOT = 0.5f;
 	MASS_GROUND = 0.f;
@@ -177,7 +177,7 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 			"drone3-x", "drone3-y", "drone3-z", "drone3-rot-x", "drone3-rot-y", "drone3-rot-z", "drone3-angular-x","drone3-angular-y","drone3-angular-z", "drone3-linear-x","drone3-linear-y","drone3-linear-z",
 			"drone4-x", "drone4-y", "drone4-z", "drone4-rot-x", "drone4-rot-y", "drone4-rot-z", "drone4-angular-x","drone4-angular-y","drone4-angular-z", "drone4-linear-x","drone4-linear-y","drone4-linear-z");
 		pDrone->setErrorStateVarId("error-z");
-		pDrone->setPIDActionId("fuerza-PID");
+		//pDrone->setPIDActionId("fuerza-PID");
 		m_pBulletPhysics->addBody(pDrone);
 		
 	}

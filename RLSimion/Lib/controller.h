@@ -76,9 +76,8 @@ class PIDDroneController : public Controller
 	CHILD_OBJECT_FACTORY<NumericValue> m_pKP;
 	CHILD_OBJECT_FACTORY<NumericValue> m_pKI;
 	CHILD_OBJECT_FACTORY<NumericValue> m_pKD;
-	ACTION_VARIABLE m_outputAction;
 	double m_intError;
-	STATE_VARIABLE m_errorVariable;
+	
 public:
 	PIDDroneController(ConfigNode* pConfigNode);
 	virtual ~PIDDroneController();
