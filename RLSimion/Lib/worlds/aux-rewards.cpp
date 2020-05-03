@@ -127,7 +127,7 @@ double DistanceReward3D::getReward(const State * s, const Action * a, const Stat
 		//se ha mejorado valor positivo 
 		//estamos por encima acelerando
 		if ((arriba && droneVY1 < droneVY0))
-			errorDistancia*1.5;
+			errorDistancia*=1.5;
 		return std::max(1.0-errorDistancia,0.0);
 		
 	}
