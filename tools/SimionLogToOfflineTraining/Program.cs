@@ -98,7 +98,6 @@ namespace SimionLogToOfflineTraining
                 for (int i = 0; i < State_p.Length; i++) sample[bufferOffset + i] = State_p[i];
                 bufferOffset += State_p.Length;
                 for (int i = 0; i < Reward.Length; i++) sample[bufferOffset + i] = Reward[i];
-                bufferOffset += Reward.Length;
 
                 byte [] result = new byte[sample.Length * sizeof(double)];
                 Buffer.BlockCopy(sample, 0, result, 0, result.Length);
@@ -213,11 +212,8 @@ namespace SimionLogToOfflineTraining
             Sampler sampler = new Sampler(commonDescriptor);
             int numSavedSamples = 0;
 
-            using (FileStream outputStream = File.Create(outputBinaryFilename))
+            using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(outputBinaryFilename)))
             {
-                BinaryWriter writer = new BinaryWriter(outputStream);
-
-
                 Console.WriteLine("STARTED: Drawing " + numSamples + " samples from log files in folder " + inputFolder);
                 foreach (string logDescriptorFilename in logDescriptorFiles)
                 {
@@ -261,7 +257,8 @@ namespace SimionLogToOfflineTraining
                 sampler.SaveSampleFileDescriptor(outputFilename, Path.GetFileName(outputBinaryFilename), numSavedSamples);
                 Console.WriteLine("FINISHED: " + numSavedSamples + " samples were drawn from the log files and saved\nDescriptor: " + outputFilename + "\nBinary data: " + outputBinaryFilename);
             }
-
+            Console.Write("Press any key...");
+            Console.ReadKey();
         }
     }
 }
