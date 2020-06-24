@@ -18,6 +18,8 @@ class Drone6DOFControl : public DynamicModel
 	/// State variables
 	size_t m_error;
 
+	size_t m_d_error;
+
 	size_t m_target_X, m_target_Y, m_target_Z;
 	size_t m_base_X, m_base_Y,m_base_Z;
 	size_t m_rotacion_base_X, m_rotacion_base_Y, m_rotacion_base_Z;

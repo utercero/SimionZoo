@@ -31,6 +31,7 @@
 #include "BulletPhysics.h"
 #include "BulletBody.h"
 #include "aux-rewards.h"
+#include "../experiment.h"
 #include "Box.h"60.0
 
 
@@ -124,28 +125,31 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 	m_linear_drone4_Y = addStateVariable("drone4-linear-y", "m/s", -8.0, 8.0);
 	m_linear_drone4_Z = addStateVariable("drone4-linear-z", "m/s", -8.0, 8.0);
 
+	m_d_error = addStateVariable("d-error-z", "m/s", -2000, 2000);
+	
+
 	//289 menos,285mas,287 mas,288 mas,2885mas 725001430512 48888 425-725001430512 50000
-	addActionVariable("fuerza-PID", "N", 0.0,22.0);
+	addActionVariable("fuerza-PID", "N", 0.0,100.0);
 
-	addActionVariable("fuerza1-1", "N", 0.0, 22.0);
-	addActionVariable("fuerza1-2", "N", 0.0, 22.0);
-	addActionVariable("fuerza1-3", "N", 0.0, 22.0);
-	addActionVariable("fuerza1-4", "N", 0.0, 22.0);
+	addActionVariable("fuerza1-1", "N", 0.0, 100.0);
+	addActionVariable("fuerza1-2", "N", 0.0, 100.0);
+	addActionVariable("fuerza1-3", "N", 0.0, 100.0);
+	addActionVariable("fuerza1-4", "N", 0.0, 100.0);
 
-	addActionVariable("fuerza2-1", "N", 0.0, 22.0);
-	addActionVariable("fuerza2-2", "N", 0.0, 22.0);
-	addActionVariable("fuerza2-3", "N", 0.0, 22.0);
-	addActionVariable("fuerza2-4", "N", 0.0, 22.0);
+	addActionVariable("fuerza2-1", "N", 0.0, 100.0);
+	addActionVariable("fuerza2-2", "N", 0.0, 100.0);
+	addActionVariable("fuerza2-3", "N", 0.0, 100.0);
+	addActionVariable("fuerza2-4", "N", 0.0, 100.0);
 
-	addActionVariable("fuerza3-1", "N", 0.0, 22.0);
-	addActionVariable("fuerza3-2", "N", 0.0, 22.0);
-	addActionVariable("fuerza3-3", "N", 0.0, 22.0);
-	addActionVariable("fuerza3-4", "N", 0.0, 22.0);
+	addActionVariable("fuerza3-1", "N", 0.0, 100.0);
+	addActionVariable("fuerza3-2", "N", 0.0, 100.0);
+	addActionVariable("fuerza3-3", "N", 0.0, 100.0);
+	addActionVariable("fuerza3-4", "N", 0.0, 100.0);
 
-	addActionVariable("fuerza4-1", "N", 0.0, 22.0);
-	addActionVariable("fuerza4-2", "N", 0.0, 22.0);
-	addActionVariable("fuerza4-3", "N", 0.0, 22.0);
-	addActionVariable("fuerza4-4", "N", 0.0, 22.0);
+	addActionVariable("fuerza4-1", "N", 0.0, 100.0);
+	addActionVariable("fuerza4-2", "N", 0.0, 100.0);
+	addActionVariable("fuerza4-3", "N", 0.0, 100.0);
+	addActionVariable("fuerza4-4", "N", 0.0, 100.0);
 
 	MASS_ROBOT = 0.5f;
 	MASS_GROUND = 0.f;
@@ -191,12 +195,27 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 
 void Drone6DOFControl::reset(State *s)
 {
+	double x;
+	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
+	{
+		//fixed setting in evaluation episodes
+		x = 0.0;
+		s->set("base-y", x);
+	}
+	else
+	{
+		//random setting in training episodes
+		x = getRandomValue()*2.+0.05;    //[0.05, 2.05]
+		s->set("base-y", x); 
+	}
 	m_pBulletPhysics->reset(s);
 }
 
 void Drone6DOFControl::executeAction(State *s, const Action *a, double dt)
 {
 	btTransform trans;
+	//balioa t-1
+	double error_z_previo = s->get("error-z");
 	m_pBulletPhysics->updateBulletState(s, a, dt);
 
 	//Update Drone
@@ -204,6 +223,12 @@ void Drone6DOFControl::executeAction(State *s, const Action *a, double dt)
 
 	//Update
 	m_pBulletPhysics->updateState(s);
+
+	//eguneratu
+	double error_z = s->get("error-z");
+	double d_error_z = (error_z - error_z_previo) / SimionApp::get()->pWorld->getDT();
+	s->set("d-error-z", d_error_z);
+
 }
 
 Drone6DOFControl::~Drone6DOFControl()

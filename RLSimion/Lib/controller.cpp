@@ -177,9 +177,12 @@ double PIDController::evaluate(const State* s, const Action* a, unsigned int out
 
 PIDDroneController::PIDDroneController(ConfigNode* pConfigNode)
 {
-	m_pKP = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KP", "Proportional gain");
-	m_pKI = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KI", "Integral gain");
-	m_pKD = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KD", "Derivative gain");
+	m_pKP_V = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KPV", "Proportional gain v");
+	m_pKP_F = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KPF", "Proportional gain f");
+	m_pKD_V = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KDV", "Derivate gain v");
+	m_pKD_F = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KDF", "Derivate gain f");
+
+
 	m_intError = 0.0;
 
 	m_inputStateVariables.push_back("error-z");
@@ -247,6 +250,7 @@ const char* PIDDroneController::getOutputAction(size_t output)
 /// <returns>The output value</returns>
 double PIDDroneController::evaluate(const State* s, const Action* a, unsigned int output)
 {
+	/*
 	if (SimionApp::get()->pWorld->getEpisodeSimTime() == 0.0)
 		m_intError = 0.0;
 	double error = s->get("error-z");
@@ -269,6 +273,21 @@ double PIDDroneController::evaluate(const State* s, const Action* a, unsigned in
 			return 3.5;
 	}
 	return error * m_pKP->get() + m_intError * m_pKI->get() + dError * m_pKD->get();
+	*/
+	if (SimionApp::get()->pWorld->getEpisodeSimTime() == 0.0)
+		m_intError = 0.0;
+	double error = s->get("error-z");
+	double errorAnterior = s->get("error-anterior");
+	double velocidad = s->get("base-linear-y");
+	double d_error = s->get("d-error-z");         
+	double target_v_y = m_pKP_V->get() * error+m_pKD_V->get()*errorAnterior;
+	double v_error = (target_v_y - velocidad);
+	double d_v_error = (v_error) / SimionApp::get()->pWorld->getDT();
+	double force = m_pKP_F->get() * v_error+m_pKD_F->get()*d_v_error;
+	//informazio gehitu s-en????????
+	return force;
+
+
 }
 
 

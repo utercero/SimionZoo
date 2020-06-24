@@ -213,11 +213,8 @@ namespace SimionLogToOfflineTraining
             Sampler sampler = new Sampler(commonDescriptor);
             int numSavedSamples = 0;
 
-            using (FileStream outputStream = File.Create(outputBinaryFilename))
+            using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(outputBinaryFilename)))
             {
-                BinaryWriter writer = new BinaryWriter(outputStream);
-
-
                 Console.WriteLine("STARTED: Drawing " + numSamples + " samples from log files in folder " + inputFolder);
                 foreach (string logDescriptorFilename in logDescriptorFiles)
                 {

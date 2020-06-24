@@ -73,9 +73,11 @@ public:
 };
 class PIDDroneController : public Controller
 {
-	CHILD_OBJECT_FACTORY<NumericValue> m_pKP;
-	CHILD_OBJECT_FACTORY<NumericValue> m_pKI;
-	CHILD_OBJECT_FACTORY<NumericValue> m_pKD;
+	CHILD_OBJECT_FACTORY<NumericValue> m_pKP_V;
+	CHILD_OBJECT_FACTORY<NumericValue> m_pKP_F;
+	CHILD_OBJECT_FACTORY<NumericValue> m_pKD_V;
+	CHILD_OBJECT_FACTORY<NumericValue> m_pKD_F;
+
 	double m_intError;
 	
 public:
