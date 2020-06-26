@@ -365,9 +365,7 @@ void Drone6DOF::updateBulletState(State * s, const Action * a, double dt)
 void Drone6DOF::reset(State * s)
 {
 	double altura = s->get("base-y");
-	s->set("error-anterior", 0);
-	s->set("error-v-anterior", 0);
-	s->set("error-d-v-anterior", 0);
+	s->set("d-error-z", 0);
 	btTransform bodyTransform;
 	btQuaternion orientation;
 	btVector3 zeroVector(0, 0, 0);

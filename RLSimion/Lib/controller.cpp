@@ -277,10 +277,9 @@ double PIDDroneController::evaluate(const State* s, const Action* a, unsigned in
 	if (SimionApp::get()->pWorld->getEpisodeSimTime() == 0.0)
 		m_intError = 0.0;
 	double error = s->get("error-z");
-	double errorAnterior = s->get("error-anterior");
 	double velocidad = s->get("base-linear-y");
 	double d_error = s->get("d-error-z");         
-	double target_v_y = m_pKP_V->get() * error+m_pKD_V->get()*errorAnterior;
+	double target_v_y = m_pKP_V->get() * error+m_pKD_V->get()*d_error;
 	double v_error = (target_v_y - velocidad);
 	double d_v_error = (v_error) / SimionApp::get()->pWorld->getDT();
 	double force = m_pKP_F->get() * v_error+m_pKD_F->get()*d_v_error;
