@@ -177,16 +177,16 @@ double PIDController::evaluate(const State* s, const Action* a, unsigned int out
 
 PIDDroneController::PIDDroneController(ConfigNode* pConfigNode)
 {
-	m_outputAction = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action");
-	m_pKP = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KP", "Proportional gain");
-	m_pKI = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KI", "Integral gain");
-	m_pKD = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KD", "Derivative gain");
+	m_pKP_V = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KPV", "Proportional gain v");
+	m_pKP_F = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KPF", "Proportional gain f");
+	m_pKD_V = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KDV", "Derivate gain v");
+	m_pKD_F = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KDF", "Derivate gain f");
 
-	m_errorVariable = STATE_VARIABLE(pConfigNode, "Input-Variable", "The input state variable");
+
 	m_intError = 0.0;
 
-	m_inputStateVariables.push_back(m_errorVariable.get());
-	m_output = vector<double>(1);
+	m_inputStateVariables.push_back("error-z");
+	m_output = vector<double>(16);
 
 	//SimionApp::get()->registerStateActionFunction("PID", this);
 }
@@ -196,12 +196,48 @@ PIDDroneController::~PIDDroneController()
 
 unsigned int PIDDroneController::getNumOutputs()
 {
-	return 1;
+	return 16;
 }
 const char* PIDDroneController::getOutputAction(size_t output)
 {
-	if (output == 0)
-		return m_outputAction.get();
+	switch (output) {
+		case 0:
+			return "fuerza1-1";
+		case 1:
+			return "fuerza1-2";
+		case 2:
+			return "fuerza1-3";
+		case 3:
+			return "fuerza1-4";
+		case 4:
+			return "fuerza2-1";
+		case 5:
+			return "fuerza2-2";
+		case 6:
+			return "fuerza2-3";
+		case 7:
+			return "fuerza2-4";
+		case 8:
+			return "fuerza3-1";
+		case 9:
+			return "fuerza3-2";
+		case 10:
+			return "fuerza3-3";
+		case 11:
+			return "fuerza3-4";
+		case 12:
+			return "fuerza4-1";
+		case 13:
+			return "fuerza4-2";
+		case 14:
+			return "fuerza4-3";
+		case 15:
+			return "fuerza4-4";
+	
+	}
+		
+
+	//todo add 
 	throw std::runtime_error("LQRController. Invalid action output given.");
 }
 
@@ -214,9 +250,10 @@ const char* PIDDroneController::getOutputAction(size_t output)
 /// <returns>The output value</returns>
 double PIDDroneController::evaluate(const State* s, const Action* a, unsigned int output)
 {
+	/*
 	if (SimionApp::get()->pWorld->getEpisodeSimTime() == 0.0)
 		m_intError = 0.0;
-	double error = s->get(m_errorVariable.get());
+	double error = s->get("error-z");
 	double dError = error * SimionApp::get()->pWorld->getDT();
 	m_intError += error * SimionApp::get()->pWorld->getDT();
 	double velocidad = s->get("base-linear-y");
@@ -236,6 +273,20 @@ double PIDDroneController::evaluate(const State* s, const Action* a, unsigned in
 			return 3.5;
 	}
 	return error * m_pKP->get() + m_intError * m_pKI->get() + dError * m_pKD->get();
+	*/
+	if (SimionApp::get()->pWorld->getEpisodeSimTime() == 0.0)
+		m_intError = 0.0;
+	double error = s->get("error-z");
+	double velocidad = s->get("base-linear-y");
+	double d_error = s->get("d-error-z");         
+	double target_v_y = m_pKP_V->get() * error+m_pKD_V->get()*d_error;
+	double v_error = (target_v_y - velocidad);
+	double d_v_error = (v_error) / SimionApp::get()->pWorld->getDT();
+	double force = m_pKP_F->get() * v_error+m_pKD_F->get()*d_v_error;
+	//informazio gehitu s-en????????
+	return force;
+
+
 }
 
 

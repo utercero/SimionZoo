@@ -21,10 +21,10 @@ public:
 class DistanceReward3D : public IRewardComponent
 {
 	const char *m_error = nullptr;
-	const char *m_var1xId = nullptr, *m_var1yId = nullptr, *m_var1zId = nullptr, *m_var1vlinearId=nullptr, *m_var1rotxId = nullptr, *m_var1rotyId = nullptr, *m_var2xId = nullptr, *m_var2yId = nullptr;
+	const char *m_var1xId = nullptr, *m_var1yId = nullptr, *m_var1zId = nullptr, *m_var1vlinearId=nullptr, *m_var1rotxId = nullptr, *m_var1rotzId = nullptr, *m_var2xId = nullptr, *m_var2yId = nullptr;
 	double m_maxDist = 1.0;
-	const double maxRot = 3.14159265358979323846 / 6;
-	const double factorRot = 50;
+	const double maxRot = 0.0000001;//3.14159265358979323846 / 6;
+	const double factorRot = 10000000;
 	const double factorAltura = 50;
 	const double alturaVuelo = Drone6DOF::altura;
 public:

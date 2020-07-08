@@ -31,22 +31,23 @@
 #include "BulletPhysics.h"
 #include "BulletBody.h"
 #include "aux-rewards.h"
-#include "Box.h"
+#include "../experiment.h"
+#include "Box.h"60.0
 
 
 Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 {
 	METADATA("World", "Drone-control");
 	  
-	m_error = addStateVariable("error-z", "m", -40.0, 40.0);
+	m_error = addStateVariable("error-z", "m", -60.0, 60.0);
 		
-	m_target_X = addStateVariable("target-x", "m", -20.0, 20.0);
-	m_target_Y = addStateVariable("target-y", "m", -20.0, 20.0);
-	m_target_Z = addStateVariable("target-z", "m", -20.0, 20.0);
+	m_target_X = addStateVariable("target-x", "m", -60.0, 60.0);
+	m_target_Y = addStateVariable("target-y", "m", -60.0, 60.0);
+	m_target_Z = addStateVariable("target-z", "m", -60.0, 60.0);
 
-	m_base_X = addStateVariable("base-x", "m", -20.0, 20.0);
-	m_base_Y = addStateVariable("base-y", "m", -40.0, 40.0);
-	m_base_Z = addStateVariable("base-z", "m", -20.0, 20.0);
+	m_base_X = addStateVariable("base-x", "m", -60.0, 60.0);
+	m_base_Y = addStateVariable("base-y", "m", -60.0, 60.0);
+	m_base_Z = addStateVariable("base-z", "m", -60.0, 60.0);
 
 	m_rotacion_base_X = addStateVariable("base-rot-x", "rad", -8.0, 8.0);
 	m_rotacion_base_Y = addStateVariable("base-rot-y", "rad", -8.0, 8.0);
@@ -61,9 +62,9 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 	m_linear_base_Z = addStateVariable("base-linear-z", "m/s", -8.0, 8.0);
 
 
-	m_drone1_X = addStateVariable("drone1-x", "m", -20.0, 20.0);
-	m_drone1_Y = addStateVariable("drone1-y", "m", -20.0, 20.0);
-	m_drone1_Z = addStateVariable("drone1-z", "m", -20.0, 20.0);
+	m_drone1_X = addStateVariable("drone1-x", "m", -60.0, 60.0);
+	m_drone1_Y = addStateVariable("drone1-y", "m", -60.0, 60.0);
+	m_drone1_Z = addStateVariable("drone1-z", "m", -60.0, 60.0);
 
 	m_rotacion_drone1_X = addStateVariable("drone1-rot-x", "rad", -8.0, 8.0);
 	m_rotacion_drone1_Y = addStateVariable("drone1-rot-y", "rad", -8.0, 8.0);
@@ -77,9 +78,9 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 	m_linear_drone1_Y = addStateVariable("drone1-linear-y", "m/s", -8.0, 8.0);
 	m_linear_drone1_Z = addStateVariable("drone1-linear-z", "m/s", -8.0, 8.0);
 
-	m_drone2_X = addStateVariable("drone2-x", "m", -20.0, 20.0);
-	m_drone2_Y = addStateVariable("drone2-y", "m", -20.0, 20.0);
-	m_drone2_Z = addStateVariable("drone2-z", "m", -20.0, 20.0);
+	m_drone2_X = addStateVariable("drone2-x", "m", -60.0, 60.0);
+	m_drone2_Y = addStateVariable("drone2-y", "m", -60.0, 60.0);
+	m_drone2_Z = addStateVariable("drone2-z", "m", -60.0, 60.0);
 
 	m_rotacion_drone2_X = addStateVariable("drone2-rot-x", "rad", -8.0, 8.0);
 	m_rotacion_drone2_Y = addStateVariable("drone2-rot-y", "rad", -8.0, 8.0);
@@ -93,9 +94,9 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 	m_linear_drone2_Z = addStateVariable("drone2-linear-z", "m/s", -8.0, 8.0);
 
 
-	m_drone3_X = addStateVariable("drone3-x", "m", -20.0, 20.0);
-	m_drone3_Y = addStateVariable("drone3-y", "m", -20.0, 20.0);
-	m_drone3_Z = addStateVariable("drone3-z", "m", -20.0, 20.0);
+	m_drone3_X = addStateVariable("drone3-x", "m", -60.0, 60.0);
+	m_drone3_Y = addStateVariable("drone3-y", "m", -60.0, 60.0);
+	m_drone3_Z = addStateVariable("drone3-z", "m", -60.0, 60.0);
 
 	m_rotacion_drone3_X = addStateVariable("drone3-rot-x", "rad", -8.0, 8.0);
 	m_rotacion_drone3_Y = addStateVariable("drone3-rot-y", "rad", -8.0, 8.0);
@@ -109,9 +110,9 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 	m_linear_drone3_Z = addStateVariable("drone3-linear-z", "m/s", -8.0, 8.0);
 
 
-	m_drone4_X = addStateVariable("drone4-x", "m", -20.0, 20.0);
-	m_drone4_Y = addStateVariable("drone4-y", "m", -20.0, 20.0);
-	m_drone4_Z = addStateVariable("drone4-z", "m", -20.0, 20.0);
+	m_drone4_X = addStateVariable("drone4-x", "m", -60.0, 60.0);
+	m_drone4_Y = addStateVariable("drone4-y", "m", -60.0, 60.0);
+	m_drone4_Z = addStateVariable("drone4-z", "m", -60.0, 60.0);
 
 	m_rotacion_drone4_X = addStateVariable("drone4-rot-x", "rad", -8.0, 8.0);
 	m_rotacion_drone4_Y = addStateVariable("drone4-rot-y", "rad", -8.0, 8.0);
@@ -124,28 +125,31 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 	m_linear_drone4_Y = addStateVariable("drone4-linear-y", "m/s", -8.0, 8.0);
 	m_linear_drone4_Z = addStateVariable("drone4-linear-z", "m/s", -8.0, 8.0);
 
+	m_d_error = addStateVariable("d-error-z", "m/s", -2000, 2000);
+	
+
 	//289 menos,285mas,287 mas,288 mas,2885mas 725001430512 48888 425-725001430512 50000
-	addActionVariable("fuerza-PID", "N", 0.0,22.0);
+	addActionVariable("fuerza-PID", "N", 0.0,100.0);
 
-	addActionVariable("fuerza1-1", "N", 0.0, 2.0);
-	addActionVariable("fuerza1-2", "N", 0.0, 2.0);
-	addActionVariable("fuerza1-3", "N", 0.0, 2.0);
-	addActionVariable("fuerza1-4", "N", 0.0, 2.0);
+	addActionVariable("fuerza1-1", "N", 0.0, 100.0);
+	addActionVariable("fuerza1-2", "N", 0.0, 100.0);
+	addActionVariable("fuerza1-3", "N", 0.0, 100.0);
+	addActionVariable("fuerza1-4", "N", 0.0, 100.0);
 
-	addActionVariable("fuerza2-1", "N", 0.0, 2.0);
-	addActionVariable("fuerza2-2", "N", 0.0, 2.0);
-	addActionVariable("fuerza2-3", "N", 0.0, 2.0);
-	addActionVariable("fuerza2-4", "N", 0.0, 2.0);
+	addActionVariable("fuerza2-1", "N", 0.0, 100.0);
+	addActionVariable("fuerza2-2", "N", 0.0, 100.0);
+	addActionVariable("fuerza2-3", "N", 0.0, 100.0);
+	addActionVariable("fuerza2-4", "N", 0.0, 100.0);
 
-	addActionVariable("fuerza3-1", "N", 0.0, 2.0);
-	addActionVariable("fuerza3-2", "N", 0.0, 2.0);
-	addActionVariable("fuerza3-3", "N", 0.0, 2.0);
-	addActionVariable("fuerza3-4", "N", 0.0, 2.0);
+	addActionVariable("fuerza3-1", "N", 0.0, 100.0);
+	addActionVariable("fuerza3-2", "N", 0.0, 100.0);
+	addActionVariable("fuerza3-3", "N", 0.0, 100.0);
+	addActionVariable("fuerza3-4", "N", 0.0, 100.0);
 
-	addActionVariable("fuerza4-1", "N", 0.0, 2.0);
-	addActionVariable("fuerza4-2", "N", 0.0, 2.0);
-	addActionVariable("fuerza4-3", "N", 0.0, 2.0);
-	addActionVariable("fuerza4-4", "N", 0.0, 2.0);
+	addActionVariable("fuerza4-1", "N", 0.0, 100.0);
+	addActionVariable("fuerza4-2", "N", 0.0, 100.0);
+	addActionVariable("fuerza4-3", "N", 0.0, 100.0);
+	addActionVariable("fuerza4-4", "N", 0.0, 100.0);
 
 	MASS_ROBOT = 0.5f;
 	MASS_GROUND = 0.f;
@@ -177,26 +181,41 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 			"drone3-x", "drone3-y", "drone3-z", "drone3-rot-x", "drone3-rot-y", "drone3-rot-z", "drone3-angular-x","drone3-angular-y","drone3-angular-z", "drone3-linear-x","drone3-linear-y","drone3-linear-z",
 			"drone4-x", "drone4-y", "drone4-z", "drone4-rot-x", "drone4-rot-y", "drone4-rot-z", "drone4-angular-x","drone4-angular-y","drone4-angular-z", "drone4-linear-x","drone4-linear-y","drone4-linear-z");
 		pDrone->setErrorStateVarId("error-z");
-		pDrone->setPIDActionId("fuerza-PID");
+		//pDrone->setPIDActionId("fuerza-PID");
 		m_pBulletPhysics->addBody(pDrone);
 		
 	}
 
 
 	//the reward function
-//	m_pRewardFunction->addRewardComponent(new DistanceReward2D(getStateDescriptor(),"robot1-x","robot1-y","target-x","target-y"));
-	m_pRewardFunction->addRewardComponent(new DistanceReward3D(getStateDescriptor(), "base-x", "base-y", "base-z", "base-rot.x","base-rot-y","base-linear-y","target-x","target-y","error-z"));
+	//m_pRewardFunction->addRewardComponent(new DistanceReward2D(getStateDescriptor(),"base-x","base-y","target-x","target-y"));
+    m_pRewardFunction->addRewardComponent(new DistanceReward3D(getStateDescriptor(), "base-x", "base-y", "base-z", "base-rot-x","base-rot-z","base-linear-y","target-x","target-y","error-z"));
 	m_pRewardFunction->initialize();
 }
 
 void Drone6DOFControl::reset(State *s)
 {
+	double x;
+	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
+	{
+		//fixed setting in evaluation episodes
+		x = 0.0;
+		s->set("base-y", x);
+	}
+	else
+	{
+		//random setting in training episodes
+		x = getRandomValue()*2.+0.05;    //[0.05, 2.05]
+		s->set("base-y", x); 
+	}
 	m_pBulletPhysics->reset(s);
 }
 
 void Drone6DOFControl::executeAction(State *s, const Action *a, double dt)
 {
 	btTransform trans;
+	//balioa t-1
+	double error_z_previo = s->get("error-z");
 	m_pBulletPhysics->updateBulletState(s, a, dt);
 
 	//Update Drone
@@ -204,6 +223,12 @@ void Drone6DOFControl::executeAction(State *s, const Action *a, double dt)
 
 	//Update
 	m_pBulletPhysics->updateState(s);
+
+	//eguneratu
+	double error_z = s->get("error-z");
+	double d_error_z = (error_z - error_z_previo) / SimionApp::get()->pWorld->getDT();
+	s->set("d-error-z", d_error_z);
+
 }
 
 Drone6DOFControl::~Drone6DOFControl()

@@ -63,7 +63,7 @@ namespace SimionLogToOfflineTraining
                 if (episodeIndex < logData.EvaluationEpisodes.Count)
                     episode = logData.EvaluationEpisodes[episodeIndex];
                 else
-                    episode = logData.TrainingEpisodes[episodeIndex - logData.TrainingEpisodes.Count];
+                    episode = logData.TrainingEpisodes[episodeIndex % logData.TrainingEpisodes.Count];
 
                 if (episode.steps.Count <= 1) return false;
 

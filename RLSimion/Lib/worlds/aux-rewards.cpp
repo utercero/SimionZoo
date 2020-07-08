@@ -76,7 +76,7 @@ double DistanceReward2D::getMax()
 	return 1.0;
 }
 
-DistanceReward3D::DistanceReward3D(Descriptor & stateDescr, const char * var1xName, const char * var1yName, const char * var1zName, const char * var1rotxName, const char * var1rotyName, const char* var1vlinearyName, const char * var2xName, const char * var2yName, const char * errorName)
+DistanceReward3D::DistanceReward3D(Descriptor & stateDescr, const char * var1xName, const char * var1yName, const char * var1zName, const char * var1rotxName, const char * var1rotzName, const char* var1vlinearyName, const char * var2xName, const char * var2yName, const char * errorName)
 {
 	m_error = errorName;
 
@@ -84,7 +84,7 @@ DistanceReward3D::DistanceReward3D(Descriptor & stateDescr, const char * var1xNa
 	m_var1yId = var1yName;
 	m_var1zId = var1zName;
 	m_var1rotxId = var1rotxName;
-	m_var1rotyId = var1rotyName;
+	m_var1rotzId = var1rotzName;
 	m_var1vlinearId = var1vlinearyName;
 	m_var2xId = var2xName;
 	m_var2yId = var2yName;
@@ -98,25 +98,41 @@ DistanceReward3D::DistanceReward3D(Descriptor & stateDescr, const char * var1xNa
 
 double DistanceReward3D::getReward(const State * s, const Action * a, const State * s_p)
 {
-	double error = s_p->get(m_error);
-	return 1 - (abs(error) / Drone6DOF::altura);
+	double errorDistancia = (abs(s_p->get(m_error)) / Drone6DOF::altura);
+	bool arriba = abs(s_p->get(m_error)) < 0.0;
+	double droneVY0 = s->get(m_var1vlinearId);
+	double droneVY1 = s_p->get(m_var1vlinearId);
+	double d_rotX = abs(s->get(m_var1rotxId))-abs(s_p->get(m_var1rotxId));
+	double d_rotZ = abs(s->get(m_var1rotzId))-abs(s_p->get(m_var1rotzId));
+	double errorRot = (d_rotX + d_rotZ)*factorRot;
+	double error = 0.0;
+	//la rotación ha empeorado
+	if (errorRot <= 0.0)
+	{
+		//si la rotacion no es mala
+		if (abs(s_p->get(m_var1rotxId)) + abs(s_p->get(m_var1rotzId)) < maxRot)
+		{
+			//si el drone esta por encima y acelerando
+			if (arriba && droneVY1 < droneVY0)
+				return std::max(getMin(), 1 - errorDistancia*1.5);
+			else
+				return 1 - errorDistancia;
+		}
+		//si la rotacion es mala
+		else
+			return std::max(getMin(), 1 - errorDistancia * 1.6);;
+	}
+	else
+	{
+		//se ha mejorado valor positivo 
+		//estamos por encima acelerando
+		if ((arriba && droneVY1 < droneVY0))
+			errorDistancia*=1.5;
+		return std::max(1.0-errorDistancia,0.0);
+		
+	}
+	
 
-	/*
-	//comprobar si la rotacion en x e y es acceptable
-	double rotX = s_p->get(m_var1rotxId);
-	double rotY = s_p->get(m_var1rotyId);
-	if (abs(rotX) > maxRot || abs(rotY) > maxRot)
-		return getMin();
-	double descuentoRot = (abs(rotX) + abs(rotY))*factorRot;
-	double droneX = s_p->get(m_var1xId);
-	double droneY = s_p->get(m_var1yId);
-	double droneZ = s_p->get(m_var1zId);
-	double targetX = s_p->get(m_var2xId);
-	double targetY = s_p->get(m_var2yId);
-	double droneVY = s_p->get(m_var1vlinearId);
-	double aterriza = 1.0;
-	double distance = getDistanceBetweenPoints(targetX, targetY, droneX, droneY);
-	*/
 }
 
 double DistanceReward3D::getMin()
