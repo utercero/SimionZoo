@@ -52,6 +52,7 @@ void DeepCACLA::deferredLoadStep()
 	SimionApp::get()->registerStateActionFunction("V", m_pCriticOnlineNetwork);
 
 	m_V_s_p = vector<double>(m_pCriticMinibatch->size());
+	m_V_s = vector<double>(m_pCriticMinibatch->size());
 }
 
 double DeepCACLA::update(const State *s, const Action *a, const State *s_p, double r, double probability)
@@ -78,25 +79,32 @@ double DeepCACLA::update(const State *s, const Action *a, const State *s_p, doub
 	}
 
 	//Critic network
+	static int numCriticUpdates = 0;
 	if (!m_pCriticMinibatch->isFull())
 		m_pCriticMinibatch->addTuple(s, a, s_p, r);
 	else
 	{
 		//evaluate V(s')
-		m_pCriticOnlineNetwork->evaluate(m_pCriticMinibatch->s_p(), m_V_s_p);
+		m_pCriticTargetNetwork->evaluate(m_pCriticMinibatch->s_p(), m_V_s_p);
+
+		//evaluate V(s)
+		m_pCriticTargetNetwork->evaluate(m_pCriticMinibatch->s_p(), m_V_s);
 
 		//calculate the target of the critic: r + gamma * V(s) - V(s')
 		for (size_t tuple = 0; tuple < m_pCriticMinibatch->size(); tuple++)
-			m_pCriticMinibatch->target()[tuple] = m_pCriticMinibatch->r()[tuple] + gamma * m_V_s_p[tuple];
+			m_pCriticMinibatch->target()[tuple] = m_pCriticMinibatch->r()[tuple] + gamma * m_V_s_p[tuple] - m_V_s[tuple];
 
 		//update the critic
 		m_pCriticOnlineNetwork->train(m_pCriticMinibatch, m_pCriticMinibatch->target(), m_criticVFunction->getLearningRate());
 		m_pCriticMinibatch->clear();
+
+	
+		numCriticUpdates++;
 	}
 
 	SimGod* pSimGod = SimionApp::get()->pSimGod.ptr();
 
-	if (pSimGod->bUpdateFrozenWeightsNow())
+	if (numCriticUpdates % 50 == 0 && pSimGod->bUpdateFrozenWeightsNow())
 	{
 		if (m_pCriticTargetNetwork)
 			m_pCriticTargetNetwork->destroy();
