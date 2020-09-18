@@ -313,6 +313,28 @@ void Drone6DOF::updateBulletState(State * s, const Action * a, double dt)
 
 
 		*fuerzas[F1_1] = a->get(m_f1_1Id);
+		*fuerzas[F1_2] = a->get(m_f1_1Id);
+		*fuerzas[F1_3] = a->get(m_f1_1Id);
+		*fuerzas[F1_4] = a->get(m_f1_1Id);
+
+		*fuerzas[F2_1] = a->get(m_f1_1Id);
+		*fuerzas[F2_2] = a->get(m_f1_1Id);
+		*fuerzas[F2_3] = a->get(m_f1_1Id);
+		*fuerzas[F2_4] = a->get(m_f1_1Id);
+
+		*fuerzas[F3_1] = a->get(m_f1_1Id);
+		*fuerzas[F3_2] = a->get(m_f1_1Id);
+		*fuerzas[F3_3] = a->get(m_f1_1Id);
+		*fuerzas[F3_4] = a->get(m_f1_1Id);
+
+		*fuerzas[F4_1] = a->get(m_f1_1Id);
+		*fuerzas[F4_2] = a->get(m_f1_1Id);
+		*fuerzas[F4_3] = a->get(m_f1_1Id);
+		*fuerzas[F4_4] = a->get(m_f1_1Id);
+
+		/*
+
+		*fuerzas[F1_1] = a->get(m_f1_1Id);
 		*fuerzas[F1_2] = a->get(m_f1_2Id);
 		*fuerzas[F1_3] = a->get(m_f1_3Id);
 		*fuerzas[F1_4] = a->get(m_f1_4Id);
@@ -331,6 +353,7 @@ void Drone6DOF::updateBulletState(State * s, const Action * a, double dt)
 		*fuerzas[F4_2] = a->get(m_f4_2Id);
 		*fuerzas[F4_3] = a->get(m_f4_3Id);
 		*fuerzas[F4_4] = a->get(m_f4_4Id);
+		*/
 	}
 	
 	int j = 0;

@@ -119,7 +119,7 @@ double DistanceReward3D::getReward(const State * s, const Action * a, const Stat
 			if (arriba && droneVY1 < droneVY0)
 				return std::max(getMin(), 1 - errorDistancia*1.5);
 			else
-				return 1 - errorDistancia;
+				return std::max(1 - errorDistancia,getMin());
 		}
 		//si la rotacion es mala
 		else
