@@ -99,6 +99,9 @@ DistanceReward3D::DistanceReward3D(Descriptor & stateDescr, const char * var1xNa
 double DistanceReward3D::getReward(const State * s, const Action * a, const State * s_p)
 {
 	double errorDistancia = (abs(s_p->get(m_error)) / Drone6DOF::altura);
+	double errorX = abs(s->get("errorX"));
+	double errorZ = abs(s->get("errorY"));
+	errorDistancia += (errorX + errorZ) * 1000;
 	bool arriba = abs(s_p->get(m_error)) < 0.0;
 	double droneVY0 = s->get(m_var1vlinearId);
 	double droneVY1 = s_p->get(m_var1vlinearId);
@@ -116,7 +119,7 @@ double DistanceReward3D::getReward(const State * s, const Action * a, const Stat
 			if (arriba && droneVY1 < droneVY0)
 				return std::max(getMin(), 1 - errorDistancia*1.5);
 			else
-				return 1 - errorDistancia;
+				return std::max(1 - errorDistancia,getMin());
 		}
 		//si la rotacion es mala
 		else

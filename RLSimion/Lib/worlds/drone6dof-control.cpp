@@ -40,7 +40,9 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 	METADATA("World", "Drone-control");
 	  
 	m_error = addStateVariable("error-z", "m", -60.0, 60.0);
-		
+	m_error_x = addStateVariable("errorX", "m", -60.0, 60.0);
+	m_error_y = addStateVariable("errorY", "m", -60.0, 60.0);
+
 	m_target_X = addStateVariable("target-x", "m", -60.0, 60.0);
 	m_target_Y = addStateVariable("target-y", "m", -60.0, 60.0);
 	m_target_Z = addStateVariable("target-z", "m", -60.0, 60.0);
@@ -205,7 +207,8 @@ void Drone6DOFControl::reset(State *s)
 	else
 	{
 		//random setting in training episodes
-		x = getRandomValue()*2.+0.05;    //[0.05, 2.05]
+		//aldatu 
+		x = getRandomValue()*59.95+0.05;    //[0.05, 60.00]
 		s->set("base-y", x); 
 	}
 	m_pBulletPhysics->reset(s);

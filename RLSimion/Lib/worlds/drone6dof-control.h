@@ -16,7 +16,7 @@ class Drone6DOFControl : public DynamicModel
 	double MASS_GROUND;
 
 	/// State variables
-	size_t m_error;
+	size_t m_error,m_error_x,m_error_y;
 
 	size_t m_d_error;
 
