@@ -408,18 +408,17 @@ void Drone6DOF::reset(State * s)
 
 		btVector3 localInertia(0, 0, 0);
 		m_bodies[i]->getCollisionShape()->calculateLocalInertia(*masas[i], localInertia);
-
-		updateState(s);
-		
-		
-
 	}
 	
+	updateState(s);
 }
 void Drone6DOF::updateState(State * s)
 {
 	btTransform transform = m_bodies[MASS_COMP]->getWorldTransform();
 	btVector3 velocidad = m_bodies[MASS_COMP]->getAngularVelocity();
+
+	double baseY = transform.getOrigin().y();
+	
 	s->set(m_xId, transform.getOrigin().x());
 	s->set(m_yId, transform.getOrigin().y());
 	s->set(m_zId, transform.getOrigin().z());
