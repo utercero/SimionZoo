@@ -125,17 +125,24 @@ double DeepCACLA::selectAction(const State *s, Action *a)
 		return 1.0;
 	}
 
-	size_t noiseSignalIndex;
-	double noise;
+
+	//se incluye para que el ruido sea el mismo para todos las fuerzas. 
+	size_t noiseSignalIndex = std::min((unsigned long long)0, m_noiseSignals.size() - 1);
+	double noise = m_noiseSignals[noiseSignalIndex]->getSample();
+	noise = m_noiseSignals[noiseSignalIndex]->getSample();
+	double scaleFactor = a->getProperties(m_actorPolicy->getUsedActionVariables()[0].c_str())->getRangeWidth() * 0.5;
+	double scaledNoise = noise * scaleFactor;
 
 	for (size_t i = 0; i < m_actorPolicy->getUsedActionVariables().size(); i++)
 	{
+		/*
 		//if there are less noise signals than output action variables, just use the last one
 		noiseSignalIndex = std::min(i, m_noiseSignals.size() - 1);
 
 		noise = m_noiseSignals[noiseSignalIndex]->getSample();
 		double scaleFactor = a->getProperties(m_actorPolicy->getUsedActionVariables()[i].c_str())->getRangeWidth() * 0.5;
 		double scaledNoise = noise * scaleFactor;
+		*/
 		const char* outputAction = m_actorPolicy->getUsedActionVariables()[i].c_str();
 		a->set(outputAction, a->get( + scaledNoise));
 	}
