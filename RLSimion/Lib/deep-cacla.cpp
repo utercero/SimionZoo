@@ -144,7 +144,7 @@ double DeepCACLA::selectAction(const State *s, Action *a)
 		double scaledNoise = noise * scaleFactor;
 		*/
 		const char* outputAction = m_actorPolicy->getUsedActionVariables()[i].c_str();
-		a->set(outputAction, a->get( + scaledNoise));
+		a->set(outputAction, a->get( outputAction) + scaledNoise);
 	}
 
 	return 1.0;
