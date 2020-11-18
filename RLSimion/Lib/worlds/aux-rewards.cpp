@@ -98,14 +98,19 @@ DistanceReward3D::DistanceReward3D(Descriptor & stateDescr, const char * var1xNa
 
 double DistanceReward3D::getReward(const State * s, const Action * a, const State * s_p)
 {
-	double errorDistancia = (abs(s_p->get(m_error)) / Drone6DOF::altura);
-	double errorX = abs(s->get("errorX"));
+	double errorDistancia = std::min(1.,abs(s_p->get(m_error)) / Drone6DOF::altura);
+	/*double errorX = abs(s->get("errorX"));
 	double errorZ = abs(s->get("errorY"));
 	if(errorX > 0.001 | errorZ > 0.001)
-		errorDistancia += (errorX + errorZ) * 100000;
-	/*bool arriba = s_p->get(m_error) < 0.0;
-	double droneVY0 = s->get(m_var1vlinearId);
-	double droneVY1 = s_p->get(m_var1vlinearId);
+		errorDistancia += (errorX + errorZ) * 100000;*/
+	
+	//double droneVY0 = abs(s->get(m_var1vlinearId));
+	double droneVY1 = abs(s_p->get(m_var1vlinearId));
+	if(errorDistancia<0.9)
+	{
+		//NO HAY QUE PERMITIR QUE ACERELE SI ESTAMOS "CERCA" DEL TARGET
+		errorDistancia = errorDistancia * 0.8 + std::min((droneVY1 / 15)*0.2, 0.2);
+	}
 	//double d_rotX = abs(s->get(m_var1rotxId))-abs(s_p->get(m_var1rotxId));
 	//double d_rotZ = abs(s->get(m_var1rotzId))-abs(s_p->get(m_var1rotzId));
 	//double errorRot = (d_rotX + d_rotZ)*factorRot;

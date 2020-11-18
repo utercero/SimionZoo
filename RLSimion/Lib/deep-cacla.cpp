@@ -57,14 +57,16 @@ void DeepCACLA::deferredLoadStep()
 
 double DeepCACLA::update(const State *s, const Action *a, const State *s_p, double r, double probability)
 {
+	static int numCriticUpdates = 0;
 	double gamma = SimionApp::get()->pSimGod->getGamma();
 
 	//Actor network
 	if (!m_pActorMinibatch->isFull())
 	{
 		//add only tuples that produced a positive temporal difference
-		double v_s= m_pCriticTargetNetwork->evaluate(s, a)[0];
-		double v_s_p= m_pCriticTargetNetwork->evaluate(s_p, a)[0];
+		double v_s = m_pCriticOnlineNetwork->evaluate(s, a)[0];
+
+		double v_s_p = m_pCriticTargetNetwork->evaluate(s_p, a)[0];
 
 		double td = r + gamma * v_s_p - v_s;
 
@@ -79,16 +81,15 @@ double DeepCACLA::update(const State *s, const Action *a, const State *s_p, doub
 	}
 
 	//Critic network
-	static int numCriticUpdates = 0;
 	if (!m_pCriticMinibatch->isFull())
 		m_pCriticMinibatch->addTuple(s, a, s_p, r);
 	else
 	{
+		//evaluate V(s)
+		m_pCriticOnlineNetwork->evaluate(m_pCriticMinibatch->s(), m_V_s);
+
 		//evaluate V(s')
 		m_pCriticTargetNetwork->evaluate(m_pCriticMinibatch->s_p(), m_V_s_p);
-
-		//evaluate V(s)
-		m_pCriticTargetNetwork->evaluate(m_pCriticMinibatch->s_p(), m_V_s);
 
 		//calculate the target of the critic: r + gamma * V(s) - V(s')
 		for (size_t tuple = 0; tuple < m_pCriticMinibatch->size(); tuple++)
@@ -98,7 +99,6 @@ double DeepCACLA::update(const State *s, const Action *a, const State *s_p, doub
 		m_pCriticOnlineNetwork->train(m_pCriticMinibatch, m_pCriticMinibatch->target(), m_criticVFunction->getLearningRate());
 		m_pCriticMinibatch->clear();
 
-	
 		numCriticUpdates++;
 	}
 
