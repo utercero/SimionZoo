@@ -106,10 +106,10 @@ double DistanceReward3D::getReward(const State * s, const Action * a, const Stat
 	
 	//double droneVY0 = abs(s->get(m_var1vlinearId));
 	double droneVY1 = abs(s_p->get(m_var1vlinearId));
-	if(errorDistancia<0.9)
+	if(errorDistancia<0.8)
 	{
 		//NO HAY QUE PERMITIR QUE ACERELE SI ESTAMOS "CERCA" DEL TARGET
-		errorDistancia = errorDistancia * 0.8 + std::min((droneVY1 / 15)*0.2, 0.2);
+		errorDistancia = errorDistancia * errorDistancia + std::min((droneVY1 / 15)*(1-errorDistancia), (1-errorDistancia));
 	}
 	//double d_rotX = abs(s->get(m_var1rotxId))-abs(s_p->get(m_var1rotxId));
 	//double d_rotZ = abs(s->get(m_var1rotzId))-abs(s_p->get(m_var1rotzId));
