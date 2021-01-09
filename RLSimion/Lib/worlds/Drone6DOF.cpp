@@ -387,7 +387,7 @@ void Drone6DOF::updateBulletState(State * s, const Action * a, double dt)
 }
 void Drone6DOF::reset(State * s)
 {
-	double altura = s->get("base-y");
+	double alturaY = s->get("base-y");
 	s->set("d-error-z", 0);
 	btTransform bodyTransform;
 	btQuaternion orientation;
@@ -399,7 +399,7 @@ void Drone6DOF::reset(State * s)
 		m_bodies[i]->setAngularVelocity(zeroVector);
 
 		bodyTransform = m_bodies[i]->getWorldTransform();
-		bodyTransform.setOrigin(*origenes[i]+btVector3(0.0,altura,0.0));
+		bodyTransform.setOrigin(*origenes[i]+btVector3(0.0,alturaY,0.0));
 		orientation.setEuler(0.0, 0.0, 0.0);
 		bodyTransform.setRotation(orientation);
 
@@ -423,7 +423,7 @@ void Drone6DOF::updateState(State * s)
 	s->set(m_yId, transform.getOrigin().y());
 	s->set(m_zId, transform.getOrigin().z());
 
-	s->set(m_error, altura- transform.getOrigin().y() );
+	s->set(m_error, (s->get("vuelo")) - transform.getOrigin().y() );
 	s->set("errorX", origenes[0]->x()- transform.getOrigin().x());
 	s->set("errorY", origenes[0]->z() - transform.getOrigin().z());
 

@@ -33,6 +33,7 @@
 #include "aux-rewards.h"
 #include "../experiment.h"
 #include "Box.h"
+#include "setpoint.h"
 
 
 Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
@@ -45,7 +46,7 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 
 	m_target_X = addStateVariable("target-x", "m", -60.0, 60.0);
 	m_target_Y = addStateVariable("target-y", "m", -60.0, 60.0);
-	m_target_Z = addStateVariable("target-z", "m", -60.0, 60.0);
+	m_target_Z = addStateVariable("vuelo", "m", -60.0, 60.0);
 
 	m_base_X = addStateVariable("base-x", "m", -60.0, 60.0);
 	m_base_Y = addStateVariable("base-y", "m", -60.0, 60.0);
@@ -188,6 +189,8 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 		
 	}
 
+	FILE_PATH_PARAM filename = FILE_PATH_PARAM(pConfigNode, "Set-Point-File", "The setpoint file", "../config/world/drone6DOF/setpoint.txt");
+	m_pSetpoint = new FileSetPoint(filename.get());
 
 	//the reward function
 	//m_pRewardFunction->addRewardComponent(new DistanceReward2D(getStateDescriptor(),"base-x","base-y","target-x","target-y"));
@@ -200,26 +203,38 @@ void Drone6DOFControl::reset(State *s)
 	double x;
 	x = 0.0;
 	s->set("base-y", x);
-	/*
+	
 	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		//fixed setting in evaluation episodes
-		x = 0.0;
-		s->set("base-y", x);
+		//s->set("vuelo", (10.0));
+		s->set(m_target_Z, m_pSetpoint->getPointSet(0.0));
+
 	}
 	else
 	{
 		//random setting in training episodes
 		//aldatu 
-		//x = getRandomValue()*0.95+0.05;    //[0.05, 60.00]
-		x = 0.0;
-		s->set("base-y", x); 
-	}*/
+		x = getRandomValue()*5.+5.;    //10-15 mejor 5-10 
+		s->set("vuelo", (0.0));
+		
+	}
 	m_pBulletPhysics->reset(s);
 }
 
 void Drone6DOFControl::executeAction(State *s, const Action *a, double dt)
 {
+	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
+	{
+		double setpoint_pitch = m_pSetpoint->getPointSet(SimionApp::get()->pWorld->getEpisodeSimTime());
+		s->set(m_target_Z, setpoint_pitch);
+	}
+	else
+	{
+		double setpoint_pitch = m_pSetpoint->getPointSet(SimionApp::get()->pWorld->getEpisodeSimTime());
+		//setpoint_pitch = setpoint_pitch / 2 + getRandomValue()*setpoint_pitch;
+		s->set(m_target_Z, setpoint_pitch);
+	}
 	btTransform trans;
 	//balioa t-1
 	double error_z_previo = s->get("error-z");
@@ -241,5 +256,6 @@ void Drone6DOFControl::executeAction(State *s, const Action *a, double dt)
 Drone6DOFControl::~Drone6DOFControl()
 {
 	delete m_pBulletPhysics;
+	delete m_pSetpoint;
 }
 

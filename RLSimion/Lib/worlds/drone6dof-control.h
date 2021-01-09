@@ -3,9 +3,11 @@
 #include "world.h"
 #include "../../../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
 
+
 class Robot;
 class BulletBody;
 class BulletPhysics;
+class SetPoint;
 
 //Move box with 2 robots
 class Drone6DOFControl : public DynamicModel
@@ -68,6 +70,7 @@ class Drone6DOFControl : public DynamicModel
 
 	///inicializaci�n
 	BulletPhysics* m_pBulletPhysics;
+	SetPoint* m_pSetpoint;
 
 public:
 	Drone6DOFControl(ConfigNode* pParameters);
