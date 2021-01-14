@@ -296,3 +296,4 @@ $RECYCLE.BIN/
 
 *.functions
 *.cd
+/config/world/drone6DOF/setpointBase.txt
