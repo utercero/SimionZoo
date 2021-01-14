@@ -100,11 +100,7 @@ double DistanceReward3D::getReward(const State * s, const Action * a, const Stat
 {
 	double error = abs(s_p->get(m_error))/(s_p->get("vuelo"));
 
-	double reward = 1. - error;
-
-	reward = std::max(reward, getMin());
-
-	return reward;
+	
 
 	/*
 
@@ -115,12 +111,20 @@ double DistanceReward3D::getReward(const State * s, const Action * a, const Stat
 		errorDistancia += (errorX + errorZ) * 100000;*/
 	
 	//double droneVY0 = abs(s->get(m_var1vlinearId));
-	/*double droneVY1 = abs(s_p->get(m_var1vlinearId));
-	if(errorDistancia<0.5)
+	double droneVY1 = abs(s_p->get(m_var1vlinearId));
+	
+	if(error<0.5)
 	{
 		//NO HAY QUE PERMITIR QUE ACERELE SI ESTAMOS "CERCA" DEL TARGET
-		errorDistancia = errorDistancia * (errorDistancia+0.5) + std::min((droneVY1 / 15)*(0.5-errorDistancia), (0.5-errorDistancia));
-	}*/
+		if (droneVY1 > 15)
+			droneVY1 = 15;
+		error = error * (error+0.5) + std::min((droneVY1 / 15)*(0.5-error), (0.5-error));
+	}
+	double reward = 1. - error;
+
+	reward = std::max(reward, getMin());
+
+	return reward;
 	//double d_rotX = abs(s->get(m_var1rotxId))-abs(s_p->get(m_var1rotxId));
 	//double d_rotZ = abs(s->get(m_var1rotzId))-abs(s_p->get(m_var1rotzId));
 	//double errorRot = (d_rotX + d_rotZ)*factorRot;
