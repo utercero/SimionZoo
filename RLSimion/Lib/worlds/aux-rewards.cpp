@@ -111,7 +111,7 @@ double DistanceReward3D::getReward(const State * s, const Action * a, const Stat
 		errorDistancia += (errorX + errorZ) * 100000;*/
 	
 	//double droneVY0 = abs(s->get(m_var1vlinearId));
-	double droneVY1 = abs(s_p->get(m_var1vlinearId));
+	/*double droneVY1 = abs(s_p->get(m_var1vlinearId));
 	
 	if(error<0.5)
 	{
@@ -119,7 +119,7 @@ double DistanceReward3D::getReward(const State * s, const Action * a, const Stat
 		if (droneVY1 > 15)
 			droneVY1 = 15;
 		error = error * (error+0.5) + std::min((droneVY1 / 15)*(0.5-error), (0.5-error));
-	}
+	}*/
 	double reward = 1. - error;
 
 	reward = std::max(reward, getMin());
