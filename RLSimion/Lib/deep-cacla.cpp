@@ -61,7 +61,7 @@ double DeepCACLA::update(const State *s, const Action *a, const State *s_p, doub
 	double gamma = SimionApp::get()->pSimGod->getGamma();
 
 	//Actor network
-	if (!m_pActorMinibatch->isFull())
+	//if (!m_pActorMinibatch->isFull())
 	{
 		//add only tuples that produced a positive temporal difference
 		double v_s = m_pCriticOnlineNetwork->evaluate(s, a)[0];
@@ -71,19 +71,20 @@ double DeepCACLA::update(const State *s, const Action *a, const State *s_p, doub
 		double td = r + gamma * v_s_p - v_s;
 
 		if (td > 0)
+		{
 			m_pActorMinibatch->addTuple(s, a, s_p, r);
-	}
-	else
-	{
-		//update the actor: only actions with a positive TD are saved in the minibatch, so we can use them as target
-		m_pActorNetwork->train(m_pActorMinibatch, m_pActorMinibatch->a(), m_actorPolicy->getLearningRate());
-		m_pActorMinibatch->clear();
-	}
+			m_pCriticMinibatch->addTuple(s, a, s_p, r);
+			if (m_pActorMinibatch->isFull())
+			{
+				m_pActorNetwork->train(m_pActorMinibatch, m_pActorMinibatch->a(), m_actorPolicy->getLearningRate());
+				m_pActorMinibatch->clear();
+			}
 
+		}
+	}
 	//Critic network
-	if (!m_pCriticMinibatch->isFull())
-		m_pCriticMinibatch->addTuple(s, a, s_p, r);
-	else
+	m_pCriticMinibatch->addTuple(s, a, s_p, r);
+	if (m_pCriticMinibatch->isFull())
 	{
 		//evaluate V(s)
 		m_pCriticOnlineNetwork->evaluate(m_pCriticMinibatch->s(), m_V_s);
