@@ -35,6 +35,7 @@
 #include "Box.h"
 #include "setpoint.h"
 
+double dif = 0.0;
 
 Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 {
@@ -158,6 +159,8 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 	MASS_GROUND = 0.f;
 	MASS_TARGET = 0.1f;
 
+
+
 	m_pBulletPhysics = new BulletPhysics();
 	m_pBulletPhysics->initPhysics();
 	m_pBulletPhysics->initPlayground();
@@ -209,14 +212,15 @@ void Drone6DOFControl::reset(State *s)
 		//fixed setting in evaluation episodes
 		//s->set("vuelo", (10.0));
 		s->set(m_target_Z, m_pSetpoint->getPointSet(0.0));
+		dif = 0.;
 
 	}
 	else
 	{
 		//random setting in training episodes
 		//aldatu 
-		x = getRandomValue()*5.+5.;    //10-15 mejor 5-10 
-		s->set("vuelo", (0.0));
+		dif = getRandomValue()*5.;    //10-15 mejor 5-10 
+		s->set(m_target_Z, m_pSetpoint->getPointSet(0.0));
 		
 	}
 	m_pBulletPhysics->reset(s);

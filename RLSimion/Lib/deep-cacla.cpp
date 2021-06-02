@@ -73,7 +73,7 @@ double DeepCACLA::update(const State *s, const Action *a, const State *s_p, doub
 		if (td > 0)
 		{
 			m_pActorMinibatch->addTuple(s, a, s_p, r);
-			m_pCriticMinibatch->addTuple(s, a, s_p, r);
+			//m_pCriticMinibatch->addTuple(s, a, s_p, r);
 			if (m_pActorMinibatch->isFull())
 			{
 				m_pActorNetwork->train(m_pActorMinibatch, m_pActorMinibatch->a(), m_actorPolicy->getLearningRate());
