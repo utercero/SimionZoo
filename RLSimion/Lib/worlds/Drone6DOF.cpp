@@ -94,15 +94,10 @@ Drone6DOF::Drone6DOF (BulletPhysics* physics, const btVector3& positionOffset) :
 	transform.setIdentity();
 	transform.setOrigin(*origenes[MASS_RIGHT_LOW]);
 	m_bodies[MASS_RIGHT_LOW] = localCreateRigidBody(btScalar(0.5), transform, m_shapes[BODYPART_RIGHT_LOW]);
-
-
-///////////////////////////// SETTING THE CONSTRAINTS /////////////////////////////////////////////7777
 	
 	btGeneric6DofSpringConstraint* joint;
 	btTransform localA, localB;
 	bool useLinearReferenceFrameA = true;
-/// ******* SPINE HEAD ******** ///
-	
 	{
 		localA.setIdentity(); localB.setIdentity();
 		localA.setOrigin(btVector3(btScalar(2.8), btScalar(0.6), btScalar(2.8)));
@@ -332,28 +327,7 @@ void Drone6DOF::updateBulletState(State * s, const Action * a, double dt)
 		*fuerzas[F4_3] = a->get(m_f1_1Id);
 		*fuerzas[F4_4] = a->get(m_f1_1Id);
 
-		/*
-
-		*fuerzas[F1_1] = a->get(m_f1_1Id);
-		*fuerzas[F1_2] = a->get(m_f1_2Id);
-		*fuerzas[F1_3] = a->get(m_f1_3Id);
-		*fuerzas[F1_4] = a->get(m_f1_4Id);
-
-		*fuerzas[F2_1] = a->get(m_f2_1Id);
-		*fuerzas[F2_2] = a->get(m_f2_2Id);
-		*fuerzas[F2_3] = a->get(m_f2_3Id);
-		*fuerzas[F2_4] = a->get(m_f2_4Id);
-
-		*fuerzas[F3_1] = a->get(m_f3_1Id);
-		*fuerzas[F3_2] = a->get(m_f3_2Id);
-		*fuerzas[F3_3] = a->get(m_f3_3Id);
-		*fuerzas[F3_4] = a->get(m_f3_4Id);
-
-		*fuerzas[F4_1] = a->get(m_f4_1Id);
-		*fuerzas[F4_2] = a->get(m_f4_2Id);
-		*fuerzas[F4_3] = a->get(m_f4_3Id);
-		*fuerzas[F4_4] = a->get(m_f4_4Id);
-		*/
+		
 	}
 	
 	int j = 0;
@@ -362,8 +336,6 @@ void Drone6DOF::updateBulletState(State * s, const Action * a, double dt)
 		btVector3 relativeForce = btVector3(0., 1.0, 0.);
 		btMatrix3x3& boxRot = m_bodies[i]->getWorldTransform().getBasis();
 		
-		//m_bodies[i]->activate(true);
-
 		m_bodies[i]->applyForce(boxRot *(relativeForce**fuerzas[j]), btVector3(0.3, 0.0, 0.3));
 		 
 		j++;
@@ -437,13 +409,7 @@ void Drone6DOF::updateState(State * s)
 	s->set(m_rotXId, x);
 	s->set(m_rotYId, y);
 	s->set(m_rotZId, z);
-	/*
-	s->set(m_rotXId, transform.getRotation().getX());
-	s->set(m_rotYId, transform.getRotation().getY());
-	s->set(m_rotZId, transform.getRotation().getZ());
-
-	*/
-
+	
 	s->set(m_angularVXId, velocidad.x());
 	s->set(m_angularVYId, velocidad.y());
 	s->set(m_angularVZId, velocidad.z());

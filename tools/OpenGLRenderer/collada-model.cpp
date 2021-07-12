@@ -32,19 +32,39 @@
 #include "mesh.h"
 #include "../GeometryLib/bounding-cylinder.h"
 #include <algorithm>
+#include <stdexcept>
 #include "../System/FileUtils.h"
 
+void addValues(vector<unsigned int> source, unsigned int sourceOffset, unsigned int numValues, vector<unsigned int>& dest)
+{
+	for (int i = 0; i < numValues; i++)
+		dest.push_back(source[sourceOffset + i]);
+}
+
+void parseIntArray(const char* pInputString, vector<unsigned int>& values)
+{
+	unsigned int numParsedValues = 0;
+	const char* pt = pInputString;
+	if (*pt == ' ' || *pt == '\n') ++pt; //skip initial space/line jump
+	while (*pt != 0)
+	{
+		values.push_back(atoi(pt));
+
+		while (*pt != 0 && *pt != ' ' && *pt != '\n') ++pt;
+		if (*pt == ' ' || *pt == '\n') ++pt;
+	}
+}
 
 unsigned int parseIntArray(const char* pInputString, unsigned int* pValues, unsigned int numValues, unsigned int startOffset= 0)
 {
 	unsigned int numParsedValues = 0;
-	const char* pt = pInputString;//strtok_s(pCharArray, " ", &nextToken);
+	const char* pt = pInputString;
 	if (*pt == ' ' || *pt == '\n') ++pt; //skip initial space/line jump
 	while (*pt != 0 && (startOffset+numParsedValues)<numValues)
 	{
 		pValues[startOffset + numParsedValues++] = (atoi(pt));
 
-		while (*pt != 0 && *pt != ' ' && *pt != '\n') ++pt;// pt = strtok_s(0, " ", &nextToken);
+		while (*pt != 0 && *pt != ' ' && *pt != '\n') ++pt;
 		if (*pt == ' ' || *pt == '\n') ++pt;
 	}
 	return numParsedValues;
@@ -149,10 +169,6 @@ Mesh* ColladaModel::loadMesh(tinyxml2::XMLElement* pRoot, tinyxml2::XMLElement* 
 	//load input definitions
 	m_definitions.load(pNode);
 
-	//vector<const char*> semanticTags = { XML_TAG_COLLADA_POSITION_SEMANTIC,XML_TAG_COLLADA_NORMAL_SEMANTIC
-	//			,XML_TAG_COLLADA_TEXCOORD_SEMANTIC };
-	//vector<Source*> pSources = { pPosSource,pNormSource,pTexCoordSource };
-
 	//find the source with the vertex positions
 	if (m_definitions.defines(XML_TAG_COLLADA_POSITION_SEMANTIC))
 	{
@@ -243,11 +259,19 @@ Mesh* ColladaModel::loadMesh(tinyxml2::XMLElement* pRoot, tinyxml2::XMLElement* 
 	}
 
 	//indices
-	//we assume polylists only have 3-vertex polygons, otherwise we are in trouble
+
 	m_numIndicesPerPrimitive = std::max(1, m_numIndicesPerPrimitive);
 	int numIndices = atoi(pNode->Attribute(XML_TAG_COLLADA_COUNT_ATTR));
-	if (pNode->Attribute(XML_TAG_COLLADA_COUNT_ATTR) != nullptr)
-		numIndices = 3 * m_numIndicesPerPrimitive * atoi(pNode->Attribute(XML_TAG_COLLADA_COUNT_ATTR));
+
+	//check if there is a <vcount> element with the number of vertices per polygon
+	tinyxml2::XMLElement* pVertexCounts = pNode->FirstChildElement(XML_TAG_COLLADA_VERTEX_COUNT);
+	vector<unsigned int> vertexCounts;
+	if (pVertexCounts != nullptr)
+	{
+		char* pCharArray = (char*)pVertexCounts->GetText();
+		parseIntArray(pCharArray, pMesh->getVertexCountArray());
+	}
+
 
 	//do different attributes share vertices?
 	if (m_numIndicesPerPrimitive >1)
@@ -258,22 +282,51 @@ Mesh* ColladaModel::loadMesh(tinyxml2::XMLElement* pRoot, tinyxml2::XMLElement* 
 		pMesh->setNumIndicesPerVertex(m_numIndicesPerPrimitive);
 	}
 
-	pMesh->allocIndices(numIndices);
-
 	//parse indices
 	int numParsedPrimitives = 0;
-	int numParsedIndices = 0;
 	tinyxml2::XMLElement* pPrimitive = pNode->FirstChildElement(XML_TAG_COLLADA_PRIMITIVE);
 	while (pPrimitive != nullptr)
 	{
 		char* pCharArray = (char*)pPrimitive->GetText();
-		numParsedIndices += parseIntArray(pCharArray, pMesh->getIndexArray(), numIndices, numParsedIndices);
-		pPrimitive = pPrimitive->NextSiblingElement(XML_TAG_COLLADA_PRIMITIVE);
-		++numParsedPrimitives;
-	}
+		vector<unsigned int> parsedIndices;
+		parseIntArray(pCharArray, parsedIndices);
 
-	if (numParsedIndices<pMesh->getNumIndices())
-		pMesh->setNumIndices(numParsedIndices);
+		if (pMesh->getVertexCountArray().size() > 0)
+		{
+			//pMesh->ignoreTexCoordsAndNormals(); //so far, all models with <vcount> have only an index per vertex even if they should have more
+			
+			int primitiveIndicesOffset = 0;
+			for (int i = 0; i < pMesh->getVertexCountArray().size(); i++)
+			{
+				if (pMesh->getVertexCountArray()[i] == 3)
+				{
+					//triangle
+					addValues(parsedIndices, primitiveIndicesOffset, 1, pMesh->getIndexArray());
+					addValues(parsedIndices, primitiveIndicesOffset + 1, 1, pMesh->getIndexArray());
+					addValues(parsedIndices, primitiveIndicesOffset + 2, 1, pMesh->getIndexArray());
+				}
+				else if (pMesh->getVertexCountArray()[i] == 4)
+				{
+					//quad
+					addValues(parsedIndices, primitiveIndicesOffset, 1, pMesh->getIndexArray());
+					addValues(parsedIndices, primitiveIndicesOffset + 1, 1, pMesh->getIndexArray());
+					addValues(parsedIndices, primitiveIndicesOffset + 2, 1, pMesh->getIndexArray());
+
+					addValues(parsedIndices, primitiveIndicesOffset, 1, pMesh->getIndexArray());
+					addValues(parsedIndices, primitiveIndicesOffset + 2, 1, pMesh->getIndexArray());
+					addValues(parsedIndices, primitiveIndicesOffset + 3, 1, pMesh->getIndexArray());
+				}
+				primitiveIndicesOffset += pMesh->getVertexCountArray()[i];
+			}
+		}
+		else
+		{
+			for (int i = 0; i < parsedIndices.size(); i++)
+				pMesh->getIndexArray().push_back(parsedIndices[i]);
+		}
+
+		pPrimitive = pPrimitive->NextSiblingElement(XML_TAG_COLLADA_PRIMITIVE);
+	}
 	
 	return pMesh;
 }
@@ -490,6 +543,7 @@ ColladaModel::ColladaModel(tinyxml2::XMLElement* pNode): GraphicObject3D(pNode)
 	if (pChild)
 	{
 		XML::load(pChild, fitBB);
+		fitBB.set(true); //mark bounding box as set
 		fitToBoundingBox(&fitBB);
 	}
 	BoundingCylinder fitBC;

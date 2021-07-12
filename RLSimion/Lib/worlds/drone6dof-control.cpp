@@ -196,7 +196,6 @@ Drone6DOFControl::Drone6DOFControl(ConfigNode* pConfigNode)
 	m_pSetpoint = new FileSetPoint(filename.get());
 
 	//the reward function
-	//m_pRewardFunction->addRewardComponent(new DistanceReward2D(getStateDescriptor(),"base-x","base-y","target-x","target-y"));
     m_pRewardFunction->addRewardComponent(new DistanceReward3D(getStateDescriptor(), "base-x", "base-y", "base-z", "base-rot-x","base-rot-z","base-linear-y","target-x","target-y","error-z"));
 	m_pRewardFunction->initialize();
 }
@@ -209,17 +208,14 @@ void Drone6DOFControl::reset(State *s)
 	
 	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
-		//fixed setting in evaluation episodes
-		//s->set("vuelo", (10.0));
 		s->set(m_target_Z, m_pSetpoint->getPointSet(0.0));
 		dif = 0.;
 
 	}
 	else
 	{
-		//random setting in training episodes
-		//aldatu 
-		dif = getRandomValue()*5.;    //10-15 mejor 5-10 
+		
+		dif = getRandomValue()*5.;
 		s->set(m_target_Z, m_pSetpoint->getPointSet(0.0));
 		
 	}
@@ -236,7 +232,6 @@ void Drone6DOFControl::executeAction(State *s, const Action *a, double dt)
 	else
 	{
 		double setpoint_pitch = m_pSetpoint->getPointSet(SimionApp::get()->pWorld->getEpisodeSimTime());
-		//setpoint_pitch = setpoint_pitch / 2 + getRandomValue()*setpoint_pitch;
 		s->set(m_target_Z, setpoint_pitch);
 	}
 	btTransform trans;
